@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env.test
+allure-results/
+allure-report/
+screenshots/
+*.log
+appium.log

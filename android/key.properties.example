@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties (never commit key.properties to Git)
+# Run `node scripts/generate-release-keystore.js` to create release.keystore and get passwords.
+storeFile=app/release.keystore
+storePassword=REPLACE_WITH_YOUR_STORE_PASSWORD
+keyAlias=release
+keyPassword=REPLACE_WITH_YOUR_KEY_PASSWORD

@@ -1,0 +1,184 @@
+name: Mobile E2E Tests (Appium + Android)
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'flood-mobile-app/**'
+      - 'flood-mobile-app/e2e/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'flood-mobile-app/**'
+      - 'flood-mobile-app/e2e/**'
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: 'Spec pattern to run (leave blank for all)'
+        required: false
+        default: ''
+
+jobs:
+  e2e-android:
+    name: Appium Android E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      # Test credentials — set these as GitHub Secrets
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+      E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+      # App backend URL — point to staging
+      EXPO_PUBLIC_API_BASE_URL: ${{ secrets.STAGING_API_URL }}
+      EXPO_PUBLIC_CRM_API_URL: ${{ secrets.STAGING_CRM_URL }}
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Java (required for Android SDK tools) ─────────────────────────────────
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # ── Node.js ───────────────────────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: flood-mobile-app/e2e/package-lock.json
+
+      # ── Android SDK / Emulator ────────────────────────────────────────────────
+      - name: Install Android SDK components
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android Emulator (API 35)
+        run: |
+          sdkmanager "platform-tools" "platforms;android-35" "emulator"
+          sdkmanager "system-images;android-35;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n test_avd \
+            -k "system-images;android-35;google_apis;x86_64" \
+            --device "pixel_6" --force
+
+      - name: Start Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          # Keep emulator running for the next steps
+          script: echo "Emulator started"
+
+      # ── APK ───────────────────────────────────────────────────────────────────
+      - name: Download release APK (from build artifact)
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-apk
+          path: flood-mobile-app/android/app/build/outputs/apk/release/
+        continue-on-error: true
+        # If no artifact exists (first run), fall back to a pre-built APK
+
+      - name: Fallback — check for local APK
+        run: |
+          APK_PATH="flood-mobile-app/android/app/build/outputs/apk/release/app-release.apk"
+          if [ ! -f "$APK_PATH" ]; then
+            echo "APK not found. Building from source..."
+            cd flood-mobile-app
+            npm install
+            npx expo prebuild --platform android --no-install
+            cd android
+            ./gradlew assembleRelease --no-daemon
+          else
+            echo "APK found at $APK_PATH"
+          fi
+
+      # ── Install E2E dependencies ──────────────────────────────────────────────
+      - name: Install E2E test dependencies
+        working-directory: flood-mobile-app/e2e
+        run: npm install
+
+      - name: Install Appium
+        working-directory: flood-mobile-app/e2e
+        run: |
+          npm install -g appium@2
+          appium driver install uiautomator2
+
+      # ── Appium server ─────────────────────────────────────────────────────────
+      - name: Start Appium server
+        run: |
+          appium --port 4723 --log appium.log --log-level info &
+          # Wait for Appium to be ready
+          for i in {1..30}; do
+            if curl -s http://localhost:4723/status | grep -q '"ready":true'; then
+              echo "Appium is ready"
+              break
+            fi
+            sleep 2
+          done
+
+      # ── Write .env.test ────────────────────────────────────────────────────────
+      - name: Write .env.test
+        working-directory: flood-mobile-app/e2e
+        run: |
+          cat > .env.test << EOF
+          E2E_USER_EMAIL=$E2E_USER_EMAIL
+          E2E_USER_PASSWORD=$E2E_USER_PASSWORD
+          E2E_ADMIN_EMAIL=$E2E_ADMIN_EMAIL
+          E2E_ADMIN_PASSWORD=$E2E_ADMIN_PASSWORD
+          ANDROID_DEVICE=emulator-5554
+          ANDROID_VERSION=14.0
+          EOF
+
+      # ── Run E2E tests ─────────────────────────────────────────────────────────
+      - name: Run Appium E2E tests
+        working-directory: flood-mobile-app/e2e
+        run: |
+          SPEC_PATTERN="${{ github.event.inputs.spec }}"
+          if [ -n "$SPEC_PATTERN" ]; then
+            npm run test -- --spec "$SPEC_PATTERN"
+          else
+            npm run test
+          fi
+        env:
+          APK_PATH: ../android/app/build/outputs/apk/release/app-release.apk
+
+      # ── Reports ───────────────────────────────────────────────────────────────
+      - name: Generate Allure report
+        if: always()
+        working-directory: flood-mobile-app/e2e
+        run: npm run allure:generate
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: flood-mobile-app/e2e/allure-report/
+          retention-days: 14
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-${{ github.run_number }}
+          path: flood-mobile-app/e2e/screenshots/
+          retention-days: 7
+
+      - name: Upload Appium log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-log-${{ github.run_number }}
+          path: appium.log
+          retention-days: 7

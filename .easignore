@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .easignore — files excluded from EAS Cloud builds
+#
+# EAS Build uploads only what it needs to compile the app.
+# Excluding test files, docs, and local scripts speeds up upload and avoids
+# accidentally leaking sensitive local dev files.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Local environment file (secrets must be set as EAS Secrets instead)
+.env
+
+# Android local build cache
+android/.gradle/
+android/build/
+android/app/build/
+
+# Test files
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# CI / dev-only scripts
+scripts/
+
+# Docs / reports
+*.md
+!README.md
+
+# Editor settings
+.vscode/
+.idea/
+
+# OS artefacts
+.DS_Store
+Thumbs.db
