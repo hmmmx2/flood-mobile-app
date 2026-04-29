@@ -1,7 +1,7 @@
 # flood-mobile-app
 
-![Expo](https://img.shields.io/badge/Expo_SDK-51-000020?logo=expo)
-![React Native](https://img.shields.io/badge/React_Native-0.74-61dafb?logo=react)
+![Expo](https://img.shields.io/badge/Expo_SDK-55-000020?logo=expo)
+![React Native](https://img.shields.io/badge/React_Native-0.81-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Android](https://img.shields.io/badge/Android-supported-green?logo=android)
 ![iOS](https://img.shields.io/badge/iOS-supported-lightgrey?logo=apple)
@@ -11,7 +11,7 @@
 
 ## Overview
 
-`flood-mobile-app` is a React Native application built with Expo SDK 51. It provides community users with real-time flood sensor readings on an interactive map, push notification alerts, community posts and groups, a blog reader, safety guides, and personal profile management — all in one app for Android and iOS.
+`flood-mobile-app` is a React Native application built with Expo SDK 55. It provides community users with real-time flood sensor readings on an interactive map, push notification alerts, community posts and groups, a blog reader, safety guides, and personal profile management — all in one app for Android and iOS.
 
 The app connects to `flood-service-community` either directly or through the Kong API Gateway when deployed via Docker. Authentication tokens are stored securely using Expo SecureStore, and push notifications are delivered through the Expo Notifications service.
 
@@ -34,8 +34,8 @@ The app connects to `flood-service-community` either directly or through the Kon
 
 | Technology | Version | Purpose |
 |---|---|---|
-| Expo SDK | 51 | Managed React Native workflow |
-| React Native | 0.74 | Cross-platform UI |
+| Expo SDK | 55 | Managed React Native workflow |
+| React Native | 0.81 | Cross-platform UI |
 | TypeScript | 5 | Static typing |
 | Expo Router | 3 | File-based navigation |
 | Zustand | 4 | Global auth state management |
@@ -100,15 +100,42 @@ Then press:
 - `i` to open an iOS simulator
 - Scan the QR code with the **Expo Go** app on a physical device
 
-> **Physical device on LAN:** Make sure `EXPO_PUBLIC_AUTH_API_URL` points to your PC's LAN IP (e.g. `http://192.168.1.x:4001`), not `localhost`.
+See the next section for picking the right backend URL for your run mode.
 
-### 4. Android emulator shortcut
+## Connect to backend
 
-The Android emulator routes `10.0.2.2` to the host machine:
+By default the app talks to the hosted Railway backend:
+
+ - AUTH: `https://flood-service-community.up.railway.app`
+ - CRM: `https://flood-service-crm.up.railway.app`
+
+After `npm install`, run `npx expo start` and it works without local Spring/Postgres/Redis.
+
+### Run against a local backend
+
+Set `EXPO_PUBLIC_AUTH_API_URL` and `EXPO_PUBLIC_CRM_API_URL` in `.env` before starting Expo:
+
+| Run mode | Hostname to use | Example |
+|---|---|---|
+| iOS simulator (macOS) | `localhost` | `http://localhost:4001` |
+| Android emulator | `10.0.2.2` (special host alias) | `http://10.0.2.2:4001` |
+| Physical phone (Expo Go / dev build) on same Wi-Fi | Your dev machine's LAN IP | `http://192.168.1.42:4001` |
+
+**Find your LAN IP:**
 
 ```bash
-EXPO_PUBLIC_AUTH_API_URL=http://10.0.2.2:4001 npx expo start
+# Windows
+ipconfig                # look for "IPv4 Address" under your Wi-Fi adapter
+
+# macOS / Linux
+ifconfig | grep "inet "  # or: ip addr
 ```
+
+## Push notifications and Expo Go (SDK 53+)
+
+Starting in Expo SDK 53, **remote push notifications were removed from Expo Go**. The app handles this gracefully — push registration is skipped silently when running inside Expo Go, and the toggle in Profile → Settings shows a friendly alert instead of crashing.
+
+If you need to actually test push delivery you must run a **development build** (see the [EAS Build Setup](#eas-build-setup-one-time-per-developer) section below). For everyday UI/feature work, Expo Go is fine.
 
 ## Environment Variables
 
@@ -129,15 +156,61 @@ EXPO_PUBLIC_CRM_API_URL=http://192.168.1.10:8080/crm
 
 > **Note:** Variables prefixed `EXPO_PUBLIC_` are bundled into the app binary. Do not put secrets in these variables.
 
-## Building an APK / IPA
+## EAS Build Setup (one-time, per developer)
 
-FloodWatch uses [EAS Build](https://docs.expo.dev/build/introduction/) for cloud builds.
+This repo is bound to the original developer's Expo account. In [`app.config.js`](app.config.js) you will see:
 
-### Configure EAS
+```js
+owner: "alwin523",
+extra: { eas: { projectId: "c7ac1981-c882-4125-99ec-c6c6fabc5c8b" } }
+```
+
+If a teammate clones the repo, logs in to **their own** Expo account, and runs `eas build`, EAS will reject the build with `Entity not authorized` because their account is not a member of the original project.
+
+To fix this, each teammate creates **their own** EAS project under their own Expo account — once.
 
 ```bash
+cd flood-mobile-app
+
+# 1. Log in to your own Expo account
 eas login
-eas build:configure
+
+# 2. Edit app.config.js — replace these two lines:
+#      owner: "alwin523",
+#      eas: { projectId: "c7ac1981-c882-4125-99ec-c6c6fabc5c8b" }
+#
+#    Change "alwin523" to your own Expo username, and remove the projectId
+#    line entirely (eas init will generate and fill it in).
+
+# 3. Initialize a new EAS project under your account
+eas init
+
+# 4. You can now build
+eas build --profile development
+```
+
+> **Important:** Keep your own `owner` / `projectId` changes local to your branch. Do **not** commit them back to the shared repo — those values must stay pointing at the original Expo account so the original developer's CI/release builds keep working.
+
+If you would rather use the existing project, ask the repo owner to invite your Expo account as a collaborator on the `alwin523` Expo team — then you can use `app.config.js` unchanged.
+
+## Building an APK / IPA
+
+After completing the [EAS Build Setup](#eas-build-setup-one-time-per-developer) above, FloodWatch uses [EAS Build](https://docs.expo.dev/build/introduction/) for cloud builds.
+
+### Build profiles in [`eas.json`](eas.json)
+
+| Profile | URL target | Use when |
+|---|---|---|
+| `development` | `10.0.2.2:4001` (Android emulator) | Local dev build with Spring on host |
+| `kong-local` | `10.0.2.2:8080/community` | Local dev build via Kong gateway |
+| `preview` | `10.0.2.2` | Internal preview APK |
+| `staging` | Railway hosted | Cloud staging |
+| `production` | Railway hosted | Public release |
+
+### Development build (recommended for push testing)
+
+```bash
+eas build --profile development --platform android
 ```
 
 ### Preview APK (Android, no store signing)
@@ -153,7 +226,7 @@ eas build --platform android --profile production
 eas build --platform ios --profile production
 ```
 
-### Local Android debug build
+### Local Android debug build (no EAS, no auth needed)
 
 ```bash
 npx expo run:android

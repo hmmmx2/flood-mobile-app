@@ -52,7 +52,7 @@ const FILTER_OPTS: { key: FilterLevel; label: string; color: string }[] = [
   { key: 2,        label: 'Warning',  color: LEVEL_COLOR[2] },
   { key: 3,        label: 'Critical', color: LEVEL_COLOR[3] },
   { key: 'dead',   label: 'Offline',  color: DEAD_COLOR },
-  { key: 'pinned', label: '★ Pinned', color: '#F59E0B' },
+  { key: 'pinned', label: 'Pinned', color: '#F59E0B' },
 ];
 
 function NodeSheet({ node, isPinned, onTogglePin, onClose }: { node: SensorNodeDto; isPinned: boolean; onTogglePin: (node: SensorNodeDto) => void; onClose: () => void }) {
@@ -149,7 +149,7 @@ export default function MapScreen() {
           <View>
             <Text style={styles.headerTitle}>Sensor Map</Text>
             <Text style={styles.headerSub}>
-              {counts.total} nodes · {counts.critical} critical · {counts.warning} warning{counts.pinned > 0 ? ` · ${counts.pinned} ★` : ''}
+              {counts.total} nodes · {counts.critical} critical · {counts.warning} warning{counts.pinned > 0 ? ` · ${counts.pinned} pinned` : ''}
             </Text>
           </View>
           <TouchableOpacity onPress={() => refetch()} style={styles.refreshBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>

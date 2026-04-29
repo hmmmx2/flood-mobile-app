@@ -80,7 +80,7 @@ export default function PostDetailScreen() {
     mutationFn: () => postsApi.toggleLike(id),
     onSuccess: (data) => {
       qc.setQueryData(['post', id], (old: any) =>
-        old ? { ...old, likedByMe: data.liked, likesCount: data.likesCount } : old
+        old ? { ...old, likedByMe: data.liked, likesCount: Math.max(0, data.likesCount) } : old
       );
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     },
@@ -165,7 +165,9 @@ export default function PostDetailScreen() {
           <View style={{ width: 40 }} />
         </View>
         <View style={s.errorState}>
-          <Text style={s.errorIcon}>⚠️</Text>
+          <View style={s.errorIconWrap}>
+            <Ionicons name="warning-outline" size={30} color={MUTED} />
+          </View>
           <Text style={s.errorTitle}>Post not found</Text>
           <TouchableOpacity style={s.retryBtn} onPress={() => refetch()}>
             <Text style={s.retryBtnText}>Retry</Text>
@@ -224,7 +226,7 @@ export default function PostDetailScreen() {
                 <View style={s.actionRow}>
                   <TouchableOpacity style={s.actionBtn} onPress={() => likeMutation.mutate()} activeOpacity={0.7}>
                     <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={16} color={post.likedByMe ? BRAND : MUTED} />
-                    <Text style={[s.actionText, post.likedByMe && { color: BRAND }]}>{post.likesCount}</Text>
+                    <Text style={[s.actionText, post.likedByMe && { color: BRAND }]}>{Math.max(0, post.likesCount)}</Text>
                   </TouchableOpacity>
                   <View style={s.actionBtn}>
                     <Ionicons name="chatbubble-outline" size={16} color={MUTED} />
@@ -309,7 +311,7 @@ const s = StyleSheet.create({
   sendBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: BRAND, alignItems: 'center', justifyContent: 'center' },
   sendBtnDisabled: { backgroundColor: MUTED },
   errorState: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
-  errorIcon: { fontSize: 40 },
+  errorIconWrap: { width: 60, height: 60, borderRadius: 30, backgroundColor: MUTED + '15', alignItems: 'center', justifyContent: 'center' },
   errorTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   retryBtn: { backgroundColor: BRAND, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 10, marginTop: 8 },
   retryBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },

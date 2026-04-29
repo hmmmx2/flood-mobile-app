@@ -50,7 +50,7 @@ type FilterKey = 'all' | AlertSeverity;
 
 type AdminSeverityFilter = 'all' | 'critical' | 'warning' | 'watch' | 'normal';
 const ADMIN_FILTERS: { key: AdminSeverityFilter; label: string; color: string }[] = [
-  { key: 'all',      label: 'All',     color: ac.textSecondary },
+  { key: 'all',      label: 'All',     color: ac.primary },
   { key: 'critical', label: 'Danger',  color: ac.status.critical },
   { key: 'warning',  label: 'Warning', color: ac.status.warning },
   { key: 'watch',    label: 'Alert',   color: ac.status.watch },
@@ -355,16 +355,16 @@ export default function AlertsScreen() {
 const communityStyles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: BG },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: CARD, paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: BORDER },
-  headerTitle: { fontSize: 19, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 19, fontWeight: '700', color: TEXT },
   headerSub: { fontSize: 12, color: MUTED, marginTop: 2 },
   tabToggle: { flexDirection: 'row', gap: 4 },
   toggleBtn: { padding: 7, borderRadius: 8, borderWidth: 1, borderColor: BORDER, backgroundColor: CARD },
   toggleBtnActive: { borderColor: BRAND, backgroundColor: BRAND + '10' },
   filterRow: { paddingHorizontal: 12, paddingVertical: 10, gap: 6 },
   filterChip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: BORDER, backgroundColor: CARD },
-  filterChipActive: { borderColor: BRAND, backgroundColor: BRAND + '12' },
+  filterChipActive: { borderColor: BRAND, backgroundColor: BRAND },
   filterChipText: { fontSize: 12, fontWeight: '600', color: MUTED },
-  filterChipTextActive: { color: BRAND },
+  filterChipTextActive: { color: '#fff' },
   listContent: { padding: 12, paddingBottom: 24 },
   alertCard: { backgroundColor: CARD, borderRadius: 14, borderWidth: 1, borderColor: BORDER, borderLeftWidth: 4, padding: 14, gap: 8 },
   alertRow: { flexDirection: 'row', gap: 10 },

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, ViewStyle,
+  View, Text, StyleSheet, TouchableOpacity, ViewStyle, Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -52,7 +52,10 @@ export default function ScreenHeader({
             <Ionicons name="chevron-back" size={20} color={colors.textPrimary} />
           </TouchableOpacity>
         ) : (
-          <View style={styles.brandDot} />
+          <Image
+            source={require('@/assets/images/icon.png')}
+            style={styles.brandLogo}
+          />
         )}
       </View>
 
@@ -98,11 +101,10 @@ const styles = StyleSheet.create({
   },
   left: { width: 36, alignItems: 'flex-start' },
   backBtn: { padding: 2 },
-  brandDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.primary,
+  brandLogo: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
   },
   centre: { flex: 1, alignItems: 'center' },
   title: { ...typography.h3, fontSize: 16 },

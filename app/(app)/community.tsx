@@ -371,13 +371,15 @@ export default function CommunityScreen() {
         {/* Hero banner */}
         <View style={styles.hero}>
           <View style={styles.heroIconWrap}>
-            <Ionicons name="location" size={22} color="#fff" />
+            <Ionicons name="people-outline" size={26} color="#fff" />
           </View>
           <Text style={styles.heroTitle}>FloodWatch Community</Text>
           <Text style={styles.heroDesc}>
             A space for Malaysians to share real-time flood updates, safety tips,
             and support one another during floods.
           </Text>
+          {/* Depth shadow overlay */}
+          <View style={styles.heroOverlay} />
         </View>
 
         {/* ── Favourites section ── */}
@@ -449,12 +451,14 @@ export default function CommunityScreen() {
               <ActivityIndicator color={BRAND} style={{ padding: 24 }} />
             ) : isError ? (
               <TouchableOpacity style={styles.emptyCard} onPress={() => refetch()} activeOpacity={0.7}>
-                <Text style={styles.emptyIcon}>⚠️</Text>
+                <Ionicons name="warning-outline" size={36} color={MUTED} />
                 <Text style={[styles.emptyText, { color: BRAND }]}>Connection error. Tap to retry</Text>
               </TouchableOpacity>
             ) : allGroups.length === 0 ? (
               <View style={styles.emptyCard}>
-                <Text style={styles.emptyIcon}>👥</Text>
+                <View style={styles.emptyIconWrap}>
+                  <Ionicons name="people-outline" size={30} color={BRAND} />
+                </View>
                 <Text style={styles.emptyText}>
                   {searchQuery ? 'No groups match your search' : 'No groups available yet'}
                 </Text>
@@ -532,7 +536,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 14,
     borderBottomWidth: 1, borderBottomColor: BORDER,
   },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: TEXT },
 
   scroll: { padding: 16, paddingBottom: 36, gap: 16 },
 
@@ -541,15 +545,25 @@ const styles = StyleSheet.create({
     backgroundColor: BRAND,
     borderRadius: 20,
     padding: 20,
+    paddingBottom: 24,
     gap: 8,
+    overflow: 'hidden',
+  },
+  heroOverlay: {
+    position: 'absolute',
+    bottom: 0, left: 0, right: 0,
+    height: 40,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   heroIconWrap: {
-    width: 44, height: 44, borderRadius: 12,
+    width: 48, height: 48, borderRadius: 14,
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center', justifyContent: 'center',
     marginBottom: 4,
   },
-  heroTitle: { fontSize: 18, fontWeight: '800', color: '#fff' },
+  heroTitle: { fontSize: 20, fontWeight: '700', color: '#fff', letterSpacing: -0.3 },
   heroDesc:  { fontSize: 13, color: 'rgba(255,255,255,0.88)', lineHeight: 20 },
 
   // Section
@@ -683,8 +697,8 @@ const styles = StyleSheet.create({
   // Shared
   divider: { height: 1, backgroundColor: BORDER, marginHorizontal: 14 },
 
-  emptyCard: { alignItems: 'center', paddingVertical: 28, gap: 6 },
-  emptyIcon: { fontSize: 32 },
+  emptyCard: { alignItems: 'center', paddingVertical: 28, gap: 8 },
+  emptyIconWrap: { width: 52, height: 52, borderRadius: 26, backgroundColor: BRAND + '15', alignItems: 'center', justifyContent: 'center' },
   emptyText: { fontSize: 14, color: MUTED },
 
   // Modal

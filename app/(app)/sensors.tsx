@@ -167,11 +167,11 @@ const adminSensorStyles = StyleSheet.create({
 type FilterKey = 'all' | 0 | 1 | 2 | 3 | 'offline';
 const FILTER_OPTS: { key: FilterKey; label: string }[] = [
   { key: 'all',     label: 'All' },
-  { key: 0,         label: '🟢 Dry' },
-  { key: 1,         label: '🔵 Normal' },
-  { key: 2,         label: '🟠 Warning' },
-  { key: 3,         label: '🔴 Critical' },
-  { key: 'offline', label: '⚫ Offline' },
+  { key: 0,         label: 'Dry' },
+  { key: 1,         label: 'Normal' },
+  { key: 2,         label: 'Warning' },
+  { key: 3,         label: 'Critical' },
+  { key: 'offline', label: 'Offline' },
 ];
 
 function FavouriteCard({ node, onNavigate, onRemove }: { node: FavouriteNodeDto; onNavigate: (n: FavouriteNodeDto) => void; onRemove: (id: string) => void }) {
@@ -294,7 +294,9 @@ function CommunitySensorsScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListEmptyComponent={
             <View style={commStyles.empty}>
-              <Text style={commStyles.emptyIcon}>📡</Text>
+              <View style={commStyles.emptyIconWrap}>
+                <Ionicons name="radio-outline" size={30} color={BRAND} />
+              </View>
               <Text style={commStyles.emptyTitle}>No nodes found</Text>
               <Text style={commStyles.emptyDesc}>{search || filter !== 'all' ? 'Clear your search or filter.' : 'No sensor nodes are registered.'}</Text>
             </View>
@@ -356,7 +358,7 @@ export default function SensorsScreen() {
 const commStyles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: BG },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: CARD, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: BORDER },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: TEXT },
   headerSub: { fontSize: 13, color: MUTED, marginTop: 2 },
   refreshBtn: { padding: 4 },
   listContent: { paddingHorizontal: 12, paddingBottom: 28 },
@@ -364,7 +366,7 @@ const commStyles = StyleSheet.create({
   favStrip: { paddingHorizontal: 12, gap: 10, paddingBottom: 4 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8 },
   sectionTitle: { fontSize: 13, fontWeight: '700', color: TEXT, flex: 1 },
-  sectionCount: { fontSize: 11, fontWeight: '700', color: CARD, backgroundColor: MUTED, borderRadius: 10, paddingHorizontal: 6, paddingVertical: 1, overflow: 'hidden' },
+  sectionCount: { fontSize: 11, fontWeight: '700', color: BRAND, backgroundColor: BRAND + '15', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 1, overflow: 'hidden' },
   searchRow: { paddingHorizontal: 12, paddingVertical: 8 },
   searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: CARD, borderRadius: 10, borderWidth: 1, borderColor: BORDER, paddingHorizontal: 10, paddingVertical: 9, gap: 8 },
   searchInput: { flex: 1, fontSize: 14, color: TEXT, padding: 0 },
@@ -374,7 +376,7 @@ const commStyles = StyleSheet.create({
   chipText: { fontSize: 13, fontWeight: '600', color: MUTED },
   chipTextActive: { color: '#fff' },
   empty: { alignItems: 'center', paddingVertical: 56, gap: 8 },
-  emptyIcon: { fontSize: 44 },
+  emptyIconWrap: { width: 64, height: 64, borderRadius: 32, backgroundColor: BRAND + '15', alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   emptyDesc: { fontSize: 13, color: MUTED, textAlign: 'center', paddingHorizontal: 24 },
 });

@@ -107,7 +107,9 @@ export default function SafetyScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <Text style={styles.emptyIcon}>🛡️</Text>
+              <View style={styles.emptyIconWrap}>
+                <Ionicons name="shield-checkmark-outline" size={30} color={BRAND} />
+              </View>
               <Text style={styles.emptyTitle}>No safety tips yet</Text>
               <Text style={styles.emptyDesc}>Safety guidelines will appear here.</Text>
             </View>
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
   },
   backBtn: { width: 40 },
   headerText: { flex: 1, alignItems: 'center' },
-  headerTitle: { fontSize: 17, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 17, fontWeight: '700', color: TEXT },
   headerSub: { fontSize: 12, color: MUTED, marginTop: 2 },
 
   listContent: { padding: 12, paddingBottom: 28 },
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
   updatedAt: { fontSize: 11, color: MUTED + '80', alignSelf: 'flex-end' },
 
   emptyState: { alignItems: 'center', paddingVertical: 60, gap: 10 },
-  emptyIcon: { fontSize: 44 },
+  emptyIconWrap: { width: 64, height: 64, borderRadius: 32, backgroundColor: BRAND + '15', alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   emptyDesc: { fontSize: 13, color: MUTED, textAlign: 'center' },
   retryBtn: { marginTop: 4, backgroundColor: BRAND, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 10 },

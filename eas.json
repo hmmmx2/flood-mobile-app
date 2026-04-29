@@ -45,19 +45,6 @@
       }
     },
 
-    "local-network": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      },
-      "env": {
-        "EXPO_PUBLIC_AUTH_API_URL": "http://192.168.0.35:4001",
-        "EXPO_PUBLIC_API_BASE_URL": "http://192.168.0.35:4001",
-        "EXPO_PUBLIC_CRM_API_URL":  "http://192.168.0.35:4002",
-        "EXPO_PUBLIC_AI_API_URL":   "http://192.168.0.35:8000"
-      }
-    },
-
     "staging": {
       "distribution": "internal",
       "android": {

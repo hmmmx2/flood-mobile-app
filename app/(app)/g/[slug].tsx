@@ -71,7 +71,9 @@ export default function GroupDetailScreen() {
           <View style={{ width: 40 }} />
         </View>
         <View style={s.emptyState}>
-          <Text style={s.emptyIcon}>⚠️</Text>
+          <View style={s.emptyIconWrap}>
+            <Ionicons name="warning-outline" size={30} color={MUTED} />
+          </View>
           <Text style={s.emptyTitle}>Could not load group</Text>
           <Text style={s.emptyDesc}>Check your connection and try again.</Text>
           <TouchableOpacity style={s.retryBtn} onPress={() => refetchGroup()} activeOpacity={0.8}>
@@ -112,7 +114,7 @@ export default function GroupDetailScreen() {
               <Text style={s.postTitle}>{item.title}</Text>
               {!!item.content && <Text style={s.postContent} numberOfLines={2}>{item.content}</Text>}
               <View style={s.actionRow}>
-                <View style={s.actionChip}><Ionicons name="heart-outline" size={13} color={MUTED} /><Text style={s.chipText}>{item.likesCount}</Text></View>
+                <View style={s.actionChip}><Ionicons name="heart-outline" size={13} color={MUTED} /><Text style={s.chipText}>{Math.max(0, item.likesCount)}</Text></View>
                 <View style={s.actionChip}><Ionicons name="chatbubble-outline" size={13} color={MUTED} /><Text style={s.chipText}>{item.commentsCount}</Text></View>
               </View>
             </View>
@@ -157,7 +159,9 @@ export default function GroupDetailScreen() {
             {isLoading && <ActivityIndicator color={BRAND} style={{ marginTop: 16 }} />}
             {postsError && !isLoading && (
               <View style={s.emptyState}>
-                <Text style={s.emptyIcon}>⚠️</Text>
+                <View style={s.emptyIconWrap}>
+                  <Ionicons name="warning-outline" size={30} color={MUTED} />
+                </View>
                 <Text style={s.emptyTitle}>Could not load posts</Text>
                 <TouchableOpacity style={s.retryBtn} onPress={() => refetch()} activeOpacity={0.8}>
                   <Text style={s.retryBtnText}>Retry</Text>
@@ -165,7 +169,13 @@ export default function GroupDetailScreen() {
               </View>
             )}
             {!isLoading && !postsError && posts.length === 0 && (
-              <View style={s.emptyState}><Text style={s.emptyIcon}>💬</Text><Text style={s.emptyTitle}>No posts yet</Text><Text style={s.emptyDesc}>Be the first to post in this group!</Text></View>
+              <View style={s.emptyState}>
+                <View style={s.emptyIconWrap}>
+                  <Ionicons name="chatbubbles-outline" size={30} color={BRAND} />
+                </View>
+                <Text style={s.emptyTitle}>No posts yet</Text>
+                <Text style={s.emptyDesc}>Be the first to post in this group!</Text>
+              </View>
             )}
           </View>
         }
@@ -194,9 +204,9 @@ const s = StyleSheet.create({
   leaveBtnText: { color: MUTED, fontWeight: '700', fontSize: 13 },
   sortRow: { flexDirection: 'row', gap: 6, marginBottom: 10 },
   sortTab: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: BORDER, backgroundColor: CARD },
-  sortTabActive: { borderColor: BRAND, backgroundColor: BRAND + '12' },
+  sortTabActive: { borderColor: BRAND, backgroundColor: BRAND },
   sortTabText: { fontSize: 13, fontWeight: '600', color: MUTED },
-  sortTabTextActive: { color: BRAND },
+  sortTabTextActive: { color: '#fff' },
   postCard: { backgroundColor: CARD, borderRadius: 14, borderWidth: 1, borderColor: BORDER, padding: 14, gap: 8 },
   authorRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: BRAND, alignItems: 'center', justifyContent: 'center' },
@@ -209,7 +219,7 @@ const s = StyleSheet.create({
   actionChip: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12, backgroundColor: BG },
   chipText: { fontSize: 12, color: MUTED, fontWeight: '600' },
   emptyState: { alignItems: 'center', paddingVertical: 48, gap: 8 },
-  emptyIcon: { fontSize: 40 },
+  emptyIconWrap: { width: 60, height: 60, borderRadius: 30, backgroundColor: BRAND + '15', alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   emptyDesc: { fontSize: 13, color: MUTED, textAlign: 'center' },
   retryBtn: { marginTop: 4, backgroundColor: BRAND, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 10 },

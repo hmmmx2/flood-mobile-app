@@ -68,7 +68,7 @@ function PostCard({ item, onDelete }: { item: AdminPostDto; onDelete: (id: strin
 
       <View style={pc.stats}>
         <Ionicons name="heart-outline" size={12} color={colors.textMuted} />
-        <Text style={pc.statText}>{item.likesCount}</Text>
+        <Text style={pc.statText}>{Math.max(0, item.likesCount)}</Text>
         <Ionicons name="chatbubble-outline" size={12} color={colors.textMuted} />
         <Text style={pc.statText}>{item.commentsCount}</Text>
       </View>

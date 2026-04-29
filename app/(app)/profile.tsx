@@ -15,7 +15,7 @@ import { router } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { settingsApi, profileApi, pushApi } from '@/src/api';
 import { useAuthStore } from '@/src/store/authStore';
 import type { UpdateSettingDto } from '@/src/api/types';
@@ -300,6 +300,14 @@ export default function ProfileScreen() {
 
   const registerPushToken = useCallback(async () => {
     if (!Device.isDevice) return; // simulators don't support push
+    // SDK 53+: remote push removed from Expo Go. Tell the user to use a dev build.
+    if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
+      Alert.alert(
+        'Push notifications unavailable',
+        'Push notifications are not supported in Expo Go (SDK 53+). Use a development build to receive push notifications.',
+      );
+      return;
+    }
     const { status: existing } = await Notifications.getPermissionsAsync();
     let finalStatus = existing;
     if (existing !== 'granted') {
@@ -364,12 +372,13 @@ export default function ProfileScreen() {
       >
         {/* ── Profile card ── */}
         <View style={styles.profileCard}>
+          {/* Brand banner sits behind the avatar */}
+          <View style={styles.profileBanner} />
           {/* BUG-S4-04: show avatar photo if available, fallback to initials */}
           {user.avatarUrl ? (
             <Image
               source={{ uri: user.avatarUrl }}
               style={styles.avatarImg}
-              onError={() => {/* fall through to initials via parent conditional */}}
             />
           ) : (
             <View style={styles.avatarWrap}>
@@ -574,7 +583,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 14,
     borderBottomWidth: 1, borderBottomColor: BORDER,
   },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: TEXT },
 
   scroll: { padding: 16, paddingBottom: 44, gap: 16 },
 
@@ -582,26 +591,45 @@ const styles = StyleSheet.create({
   profileCard: {
     backgroundColor: CARD,
     borderRadius: 20, borderWidth: 1, borderColor: BORDER,
-    padding: 24, alignItems: 'center', gap: 6,
+    paddingTop: 0,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    alignItems: 'center', gap: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06, shadowRadius: 8,
     elevation: 3,
+    overflow: 'hidden',
+  },
+  profileBanner: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0,
+    height: 72,
+    backgroundColor: BRAND,
   },
   avatarWrap: {
-    width: 76, height: 76, borderRadius: 38,
+    width: 84, height: 84, borderRadius: 42,
     backgroundColor: BRAND,
     alignItems: 'center', justifyContent: 'center',
+    marginTop: 30,
     marginBottom: 10,
+    borderWidth: 4,
+    borderColor: CARD,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12, shadowRadius: 6,
+    elevation: 4,
   },
-  // BUG-S4-04: avatar photo style — same dimensions as initials circle
   avatarImg: {
-    width: 76, height: 76, borderRadius: 38,
+    width: 84, height: 84, borderRadius: 42,
+    marginTop: 30,
     marginBottom: 10,
     backgroundColor: BORDER,
+    borderWidth: 4,
+    borderColor: CARD,
   },
   avatarText:   { fontSize: 28, fontWeight: '800', color: '#fff' },
-  userName:     { fontSize: 20, fontWeight: '800', color: TEXT },
+  userName:     { fontSize: 20, fontWeight: '700', color: TEXT },
   userEmail:    { fontSize: 14, color: MUTED },
   locationRow:  { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
   locationText: { fontSize: 13, color: MUTED },
@@ -695,7 +723,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 16,
   },
-  modalTitle: { fontSize: 18, fontWeight: '800', color: TEXT, marginBottom: 4 },
+  modalTitle: { fontSize: 18, fontWeight: '700', color: TEXT, marginBottom: 4 },
   modalSubtitle: { fontSize: 13, color: MUTED, marginBottom: 20, lineHeight: 19 },
 
   inputLabel: { fontSize: 13, fontWeight: '600', color: TEXT, marginBottom: 6 },
@@ -721,5 +749,5 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   submitBtnDisabled: { opacity: 0.5 },
-  submitBtnText: { fontSize: 15, fontWeight: '800', color: '#fff' },
+  submitBtnText: { fontSize: 15, fontWeight: '700', color: '#fff' },
 });

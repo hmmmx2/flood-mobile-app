@@ -24,10 +24,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { LoginResponseDto, RefreshResponseDto } from './types';
 
 const AUTH_BASE_URL =
-  process.env.EXPO_PUBLIC_AUTH_API_URL ?? process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:4001';
+  process.env.EXPO_PUBLIC_AUTH_API_URL
+  ?? process.env.EXPO_PUBLIC_API_BASE_URL
+  ?? 'https://flood-service-community.up.railway.app';
 
 const CRM_BASE_URL =
-  process.env.EXPO_PUBLIC_CRM_API_URL ?? 'http://localhost:4002';
+  process.env.EXPO_PUBLIC_CRM_API_URL
+  ?? 'https://flood-service-crm.up.railway.app';
+
+if (__DEV__ && !process.env.EXPO_PUBLIC_AUTH_API_URL) {
+  console.info(
+    `[api] Using hosted backend at ${AUTH_BASE_URL}. ` +
+    'To target a local Spring server, set EXPO_PUBLIC_AUTH_API_URL ' +
+    '(see flood-mobile-app/README.md -> "Run against a local backend").',
+  );
+}
 
 // ── Unified token store ──────────────────────────────────────────────────────
 

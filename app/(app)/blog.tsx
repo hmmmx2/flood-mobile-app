@@ -104,6 +104,7 @@ function BlogCard({ blog, featured = false, isSaved, onToggleSave }: BlogCardPro
     <View style={[styles.card, featured && styles.featuredCard]}>
       {/* Placeholder image */}
       <View style={[styles.cardBanner, featured && styles.featuredBanner]}>
+        {featured && <View style={styles.featuredGlare} />}
         <Ionicons
           name="newspaper"
           size={featured ? 44 : 30}
@@ -324,7 +325,9 @@ export default function BlogScreen() {
             {/* Error */}
             {!isLoading && isError && (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyIcon}>⚠️</Text>
+                <View style={styles.emptyIconWrap}>
+                  <Ionicons name="warning-outline" size={30} color={MUTED} />
+                </View>
                 <Text style={styles.emptyTitle}>Failed to load articles</Text>
                 <Text style={styles.emptyDesc}>Check your connection and try again.</Text>
                 <TouchableOpacity style={styles.retryBtn} onPress={() => refetch()} activeOpacity={0.8}>
@@ -336,7 +339,9 @@ export default function BlogScreen() {
             {/* Empty */}
             {!isLoading && !isError && filtered.length === 0 && (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyIcon}>{selectedCat === 'Saved' ? '🤍' : '📰'}</Text>
+                <View style={styles.emptyIconWrap}>
+                  <Ionicons name={selectedCat === 'Saved' ? 'heart-outline' : 'newspaper-outline'} size={30} color={BRAND} />
+                </View>
                 <Text style={styles.emptyTitle}>
                   {selectedCat === 'Saved' ? 'No saved articles' : 'No articles'}
                 </Text>
@@ -367,7 +372,7 @@ const styles = StyleSheet.create({
     paddingTop: 14, paddingBottom: 12,
     borderBottomWidth: 1, borderBottomColor: BORDER,
   },
-  headerTitle: { fontSize: 20, fontWeight: '800', color: TEXT },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: TEXT },
   headerSub:   { fontSize: 13, color: MUTED, marginTop: 2 },
 
   listContent: { padding: 12, paddingBottom: 28, gap: 12 },
@@ -412,10 +417,18 @@ const styles = StyleSheet.create({
 
   cardBanner: {
     height: 90,
-    backgroundColor: MUTED + '28',
+    backgroundColor: BRAND + '18',
     alignItems: 'center', justifyContent: 'center',
+    overflow: 'hidden',
   },
-  featuredBanner: { height: 130, backgroundColor: BRAND + '20' },
+  featuredBanner: { height: 130, backgroundColor: BRAND, overflow: 'hidden' },
+  featuredGlare: {
+    position: 'absolute',
+    right: -20, top: -20,
+    width: 100, height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
 
   // Card action buttons overlay (top-right of banner)
   cardActions: {
@@ -446,7 +459,7 @@ const styles = StyleSheet.create({
   cardTopRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
 
   catBadge: {
-    paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20,
+    paddingHorizontal: 8, paddingVertical: 3, borderRadius: 9999,
   },
   catText: { fontSize: 11, fontWeight: '700' },
 
@@ -460,7 +473,7 @@ const styles = StyleSheet.create({
 
   // Empty state
   emptyState: { alignItems: 'center', paddingVertical: 56, gap: 8 },
-  emptyIcon:  { fontSize: 44 },
+  emptyIconWrap: { width: 64, height: 64, borderRadius: 32, backgroundColor: BRAND + '15', alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   emptyDesc:  { fontSize: 13, color: MUTED, textAlign: 'center' },
   retryBtn:   { marginTop: 4, backgroundColor: BRAND, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 10 },

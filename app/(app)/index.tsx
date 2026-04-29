@@ -61,6 +61,18 @@ function getInitials(name: string): string {
   return name.split(' ').map((w) => w[0] ?? '').slice(0, 2).join('').toUpperCase();
 }
 
+const AVATAR_PALETTE = ['#1d4ed8', '#0277BD', '#2E7D32', '#6A1B9A', '#AD1457', '#00838F', '#F57F17'];
+function nameToColor(name: string): string {
+  const code = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return AVATAR_PALETTE[code % AVATAR_PALETTE.length]!;
+}
+
+function getGreeting(firstName?: string | null): string {
+  const h = new Date().getHours();
+  const time = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  return firstName ? `${time}, ${firstName}` : 'FloodWatch';
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 // ADMIN DASHBOARD SCREEN
 // ═════════════════════════════════════════════════════════════════════════════
@@ -141,7 +153,7 @@ function AdminDashboardScreen() {
   const { data: nodes, isLoading, isError: nodesError, refetch, isRefetching, dataUpdatedAt } = useQuery({
     queryKey: ['dashboard-nodes'],
     queryFn: dashboardApi.getNodes,
-    refetchInterval: isActive ? 30_000 : false,
+    refetchInterval: isActive ? 1_000 : false,
   });
 
   React.useEffect(() => {
@@ -222,7 +234,7 @@ function AdminDashboardScreen() {
         </View>
 
         <Text style={{ ...aty.caption, textAlign: 'center', marginTop: asp.xl, marginBottom: asp.sm }}>
-          Auto-refreshes every 30s · Last fetch: {lastFetchTime ?? '—'}
+          Auto-refreshes every 1s · Last fetch: {lastFetchTime ?? '—'}
         </Text>
       </ScrollView>
     </View>
@@ -257,18 +269,29 @@ const PostCard = React.memo(function PostCard({ post, onLike, onPress }: PostCar
     } catch (_) { /* ignore dismissals */ }
   };
 
+  const avatarColor = nameToColor(post.authorName);
+
   return (
     <View style={feedStyles.card}>
       <Pressable onPress={onPress} android_ripple={{ color: 'rgba(0,0,0,0.04)', borderless: false }} style={{ gap: 10 }}>
         <View style={feedStyles.cardHeader}>
-          <View style={feedStyles.avatar}>
+          <View style={[feedStyles.avatar, { backgroundColor: avatarColor }]}>
             <Text style={feedStyles.avatarText}>{getInitials(post.authorName)}</Text>
           </View>
           <View style={feedStyles.cardMeta}>
             <Text style={feedStyles.authorName}>{post.authorName}</Text>
-            <Text style={feedStyles.metaSub}>
-              {post.groupName ? `g/${post.groupName}` : 'FloodWatch'}{'  ·  '}{timeAgo(post.createdAt)}
-            </Text>
+            <View style={feedStyles.metaSubRow}>
+              {!!post.groupName && (
+                <View style={[feedStyles.groupPill, { backgroundColor: nameToColor(post.groupName) + '20' }]}>
+                  <Text style={[feedStyles.groupPillText, { color: nameToColor(post.groupName) }]}>
+                    g/{post.groupName}
+                  </Text>
+                </View>
+              )}
+              <Text style={feedStyles.metaSub}>
+                {!post.groupName ? 'FloodWatch  ·  ' : '  ·  '}{timeAgo(post.createdAt)}
+              </Text>
+            </View>
           </View>
         </View>
         <Text style={feedStyles.cardTitle}>{post.title}</Text>
@@ -277,7 +300,7 @@ const PostCard = React.memo(function PostCard({ post, onLike, onPress }: PostCar
       <View style={feedStyles.cardActions}>
         <TouchableOpacity style={feedStyles.actionBtn} onPress={(e) => { stopProp(e); onLike(post.id); }} activeOpacity={0.7}>
           <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={15} color={post.likedByMe ? BRAND : MUTED} />
-          <Text style={[feedStyles.actionText, post.likedByMe && { color: BRAND }]}>{post.likesCount}</Text>
+          <Text style={[feedStyles.actionText, post.likedByMe && { color: BRAND }]}>{Math.max(0, post.likesCount)}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={feedStyles.actionBtn} onPress={(e) => { stopProp(e); router.push(`/(app)/post/${post.id}` as any); }} activeOpacity={0.7}>
           <Ionicons name="chatbubble-outline" size={15} color={MUTED} />
@@ -321,7 +344,7 @@ function CustomerFeedScreen() {
       qc.setQueryData<InfiniteData<PageDto<PostDto>>>(['posts', sort], (old) => {
         if (!old) return old;
         return { ...old, pages: old.pages.map((page) => ({ ...page, content: page.content.map((p) =>
-          p.id === postId ? { ...p, likedByMe: !p.likedByMe, likesCount: p.likedByMe ? p.likesCount - 1 : p.likesCount + 1 } : p
+          p.id === postId ? { ...p, likedByMe: !p.likedByMe, likesCount: Math.max(0, p.likedByMe ? p.likesCount - 1 : p.likesCount + 1) } : p
         ) })) };
       });
       return { prev };
@@ -356,7 +379,10 @@ function CustomerFeedScreen() {
       <View style={feedStyles.topBar}>
         <View style={feedStyles.topLogo}>
           <Image source={require('@/assets/images/icon.png')} style={{ width: 30, height: 30, borderRadius: 6 }} resizeMode="contain" />
-          <Text style={feedStyles.logoText}>FloodWatch</Text>
+          <View>
+            <Text style={feedStyles.logoText}>{getGreeting(user?.firstName)}</Text>
+            <Text style={feedStyles.logoSub}>Stay informed, stay safe.</Text>
+          </View>
         </View>
         <TouchableOpacity style={feedStyles.topBtn} onPress={() => router.push('/(app)/alerts')} activeOpacity={0.75}>
           <Ionicons name="notifications-outline" size={22} color={TEXT} />
@@ -472,7 +498,8 @@ const feedStyles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: CARD, paddingHorizontal: 16, paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: BORDER },
   topLogo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   logoDot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: BRAND },
-  logoText: { fontSize: 17, fontWeight: '800', color: TEXT },
+  logoText: { fontSize: 15, fontWeight: '700', color: TEXT },
+  logoSub: { fontSize: 11, color: MUTED, marginTop: 1 },
   topBtn: { padding: 4 },
   listContent: { padding: 12, paddingBottom: 24, gap: 10 },
   createBar: { backgroundColor: CARD, borderRadius: 16, borderWidth: 1, borderColor: BORDER, flexDirection: 'row', alignItems: 'center', padding: 12, gap: 10, marginBottom: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
@@ -483,24 +510,26 @@ const feedStyles = StyleSheet.create({
   createImgBtn: { padding: 6, backgroundColor: BG, borderRadius: 8, borderWidth: 1, borderColor: BORDER },
   sortRow: { flexDirection: 'row', gap: 6, marginBottom: 10 },
   sortTab: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: BORDER, backgroundColor: CARD },
-  sortTabActive: { borderColor: BRAND, backgroundColor: BRAND + '12' },
+  sortTabActive: { borderColor: BRAND, backgroundColor: BRAND },
   sortTabText: { fontSize: 13, fontWeight: '600', color: MUTED },
-  sortTabTextActive: { color: BRAND },
+  sortTabTextActive: { color: '#fff' },
   sectionLabel: { fontSize: 11, fontWeight: '700', color: MUTED, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8, marginHorizontal: 2 },
   card: { backgroundColor: CARD, borderRadius: 16, borderWidth: 1, borderColor: BORDER, padding: 14, gap: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   avatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: BRAND, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   avatarText: { fontSize: 13, fontWeight: '700', color: '#fff' },
-  cardMeta: { flex: 1, gap: 1 },
+  cardMeta: { flex: 1, gap: 3 },
   authorName: { fontSize: 14, fontWeight: '700', color: TEXT },
+  metaSubRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 4 },
+  groupPill: { borderRadius: 9999, paddingHorizontal: 7, paddingVertical: 2 },
+  groupPillText: { fontSize: 11, fontWeight: '600' },
   metaSub: { fontSize: 12, color: MUTED },
   cardTitle: { fontSize: 15, fontWeight: '700', color: TEXT, lineHeight: 22 },
   cardContent: { fontSize: 13, color: MUTED, lineHeight: 19 },
   cardActions: { flexDirection: 'row', gap: 6, marginTop: 2 },
-  actionBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: BORDER },
+  actionBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20, backgroundColor: BG },
   actionText: { fontSize: 12, fontWeight: '600', color: MUTED },
   emptyState: { alignItems: 'center', paddingVertical: 56, gap: 8 },
-  emptyIcon: { fontSize: 44 },
   emptyTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   emptyDesc: { fontSize: 13, color: MUTED, textAlign: 'center' },
   retryBtn: { marginTop: 12, backgroundColor: BRAND, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 10 },

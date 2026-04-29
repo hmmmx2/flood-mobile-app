@@ -12,7 +12,7 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { pushApi } from '@/src/api';
 
 /**
@@ -24,6 +24,16 @@ export async function tryRegisterPushToken(): Promise<void> {
   try {
     // Expo push tokens are only available on physical devices
     if (!Device.isDevice) return;
+
+    // SDK 53+: remote push notifications were removed from Expo Go.
+    // Skip silently when running inside the Expo Go store client; push only
+    // activates in development builds, preview builds, and production builds.
+    if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) {
+      if (__DEV__) {
+        console.info('[push] Skipping registration in Expo Go (use a dev build for push notifications).');
+      }
+      return;
+    }
 
     const { status: existing } = await Notifications.getPermissionsAsync();
     let finalStatus = existing;
