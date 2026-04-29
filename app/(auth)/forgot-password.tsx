@@ -17,14 +17,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import axios from 'axios';
 import { authApi } from '@/src/api';
+import { colors } from '@/src/theme';
 
-const BRAND  = '#1d4ed8';
-const BG     = '#eef2ff';
-const CARD   = '#FFFFFF';
-const BORDER = '#e2e8f0';
-const TEXT   = '#1e293b';
-const MUTED  = '#64748b';
-const SUCCESS = '#22C55E';
+const BRAND = colors.brand;
+const BG = colors.bg;
+const CARD = colors.card;
+const BORDER = colors.border;
+const TEXT = colors.text;
+const MUTED = colors.muted;
+
+const SUCCESS = colors.success;
 
 type Step = 1 | 2 | 3;
 
