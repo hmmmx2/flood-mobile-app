@@ -18,11 +18,11 @@ import type { CommentDto } from '@/src/api/types';
 import * as Haptics from 'expo-haptics';
 
 const BRAND = '#1d4ed8';
-const BG    = '#F4F6F9';
+const BG    = '#eef2ff';
 const CARD  = '#FFFFFF';
-const BORDER = '#DDE3ED';
-const TEXT  = '#1A1A2E';
-const MUTED = '#6B7280';
+const BORDER = '#e2e8f0';
+const TEXT  = '#1e293b';
+const MUTED = '#64748b';
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();

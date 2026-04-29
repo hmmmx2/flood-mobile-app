@@ -16,8 +16,8 @@ import { useAuthStore } from '@/src/store/authStore';
 import type { PostDto, GroupDto, PageDto } from '@/src/api/types';
 import * as Haptics from 'expo-haptics';
 
-const BRAND = '#1d4ed8'; const BG = '#F4F6F9'; const CARD = '#FFFFFF';
-const BORDER = '#DDE3ED'; const TEXT = '#1A1A2E'; const MUTED = '#6B7280';
+const BRAND = '#1d4ed8'; const BG = '#eef2ff'; const CARD = '#FFFFFF';
+const BORDER = '#e2e8f0'; const TEXT = '#1e293b'; const MUTED = '#64748b';
 
 function timeAgo(d: string) {
   const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000);

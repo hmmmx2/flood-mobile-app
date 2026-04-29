@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1A1A2E',
+    color: '#1e293b',
     marginBottom: 8,
   },
   message: {

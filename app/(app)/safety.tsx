@@ -15,11 +15,11 @@ import { safetyApi } from '@/src/api';
 import type { SafetyContentDto } from '@/src/api/types';
 
 const BRAND  = '#1d4ed8';
-const BG     = '#F4F6F9';
+const BG     = '#eef2ff';
 const CARD   = '#FFFFFF';
-const BORDER = '#DDE3ED';
-const TEXT   = '#1A1A2E';
-const MUTED  = '#6B7280';
+const BORDER = '#e2e8f0';
+const TEXT   = '#1e293b';
+const MUTED  = '#64748b';
 
 const SECTION_ICONS: Record<string, string> = {
   'Evacuation':      'exit-outline',

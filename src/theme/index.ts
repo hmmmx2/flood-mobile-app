@@ -23,10 +23,10 @@ export const colors = {
   pillBg:     '#f1f5f9',
 
   // ── Flood status (keep red semantics for safety) ────────────
-  success:    '#22c55e',
-  warning:    '#f59e0b',
-  danger:     '#ef4444',
-  critical:   '#7f1d1d',
+  success:    '#16a34a',
+  warning:    '#d97706',
+  danger:     '#ea580c',
+  critical:   '#dc2626',
 } as const;
 
 export const radii = {

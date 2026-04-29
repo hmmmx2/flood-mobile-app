@@ -21,11 +21,11 @@ import { authApi } from '@/src/api';
 import { useAuthStore } from '@/src/store/authStore';
 
 const BRAND  = '#1d4ed8';
-const BG     = '#F4F6F9';
+const BG     = '#eef2ff';
 const CARD   = '#FFFFFF';
-const BORDER = '#DDE3ED';
-const TEXT   = '#1A1A2E';
-const MUTED  = '#6B7280';
+const BORDER = '#e2e8f0';
+const TEXT   = '#1e293b';
+const MUTED  = '#64748b';
 
 export default function LoginScreen() {
   const [email, setEmail]       = useState('');

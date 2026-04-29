@@ -6,47 +6,47 @@
 
 export const colors = {
   // ── Brand ────────────────────────────────────────────────────────────────
-  primary: '#1d4ed8',
+  primary:    '#1d4ed8',
   primaryDim: 'rgba(29,78,216,0.15)',
 
   // ── Backgrounds ──────────────────────────────────────────────────────────
-  background: '#1A1A2E',
-  card: '#16213E',
-  cardAlt: '#1E2A40',
-  overlay: 'rgba(0,0,0,0.6)',
+  background: '#060d1a',
+  card:       '#0d1f3d',
+  cardAlt:    '#0f2347',
+  overlay:    'rgba(0,0,0,0.6)',
 
   // ── Borders ───────────────────────────────────────────────────────────────
-  border: '#2D3A5A',
-  borderLight: 'rgba(45,58,90,0.5)',
+  border:      '#1e3a5f',
+  borderLight: 'rgba(30,58,95,0.5)',
 
   // ── Text ─────────────────────────────────────────────────────────────────
-  textPrimary: '#E8E8E8',
-  textSecondary: '#A0A0A0',
-  textMuted: '#6B7280',
+  textPrimary:   '#e8edf5',
+  textSecondary: '#8899b8',
+  textMuted:     '#5a6a8a',
 
   // ── Status ────────────────────────────────────────────────────────────────
   status: {
-    normal: '#56E40A',
-    watch: '#FFD54F',
-    warning: '#FF9F1C',
-    critical: '#D7263D',
-    offline: '#6B7280',
+    normal:   '#16a34a',
+    watch:    '#d97706',
+    warning:  '#ea580c',
+    critical: '#dc2626',
+    offline:  '#6B7280',
   },
 
   // ── Status dim (badge backgrounds) ───────────────────────────────────────
   statusDim: {
-    normal: 'rgba(86,228,10,0.12)',
-    watch: 'rgba(255,213,79,0.15)',
-    warning: 'rgba(255,159,28,0.15)',
-    critical: 'rgba(215,38,55,0.15)',
-    offline: 'rgba(107,114,128,0.15)',
+    normal:   'rgba(22,163,74,0.12)',
+    watch:    'rgba(217,119,6,0.15)',
+    warning:  'rgba(234,88,12,0.15)',
+    critical: 'rgba(220,38,38,0.15)',
+    offline:  'rgba(107,114,128,0.15)',
   },
 
   // ── UI Surface ────────────────────────────────────────────────────────────
-  inputBg: '#0F1523',
-  tabBar: '#16213E',
-  divider: '#2D3A5A',
-  skeleton: '#2D3A5A',
+  inputBg:  '#0a1628',
+  tabBar:   '#0d1f3d',
+  divider:  '#1e3a5f',
+  skeleton: '#1e3a5f',
 } as const;
 
 export const typography = {
@@ -112,7 +112,7 @@ export function getLevelColor(level: number): string {
 export function getLevelLabel(level: number): string {
   switch (level) {
     case 0: return 'Normal';
-    case 1: return 'Alert';
+    case 1: return 'Watch';
     case 2: return 'Warning';
     case 3: return 'Critical';
     default: return 'Unknown';

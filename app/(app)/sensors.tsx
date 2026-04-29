@@ -25,11 +25,11 @@ import { colors as ac, spacing as asp, typography as aty, radius as ar } from '@
 
 // ── Community colours ─────────────────────────────────────────────────────────
 const BRAND  = '#1d4ed8';
-const BG     = '#F4F6F9';
+const BG     = '#eef2ff';
 const CARD   = '#FFFFFF';
-const BORDER = '#DDE3ED';
-const TEXT   = '#1A1A2E';
-const MUTED  = '#6B7280';
+const BORDER = '#e2e8f0';
+const TEXT   = '#1e293b';
+const MUTED  = '#64748b';
 
 const LEVEL_COLOR: Record<number, string> = { 0: '#22C55E', 1: '#3B82F6', 2: '#F97316', 3: '#EF4444' };
 const LEVEL_LABEL: Record<number, string> = { 0: 'Normal', 1: 'Watch', 2: 'Warning', 3: 'Critical' };

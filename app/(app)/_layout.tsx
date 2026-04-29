@@ -86,8 +86,8 @@ export default function AppLayout() {
 
   // ── Dynamic tab bar theme ──────────────────────────────────────────────────
   const activeTint   = isAdmin ? ADMIN_TINT   : COMMUNITY_TINT;
-  const tabBarBg     = isAdmin ? '#16213E'    : '#FFFFFF';
-  const tabBarBorder = isAdmin ? '#2D3A5A'    : '#DDE3ED';
+  const tabBarBg     = isAdmin ? '#0d1f3d'    : '#FFFFFF';
+  const tabBarBorder = isAdmin ? '#1e3a5f'    : '#DDE3ED';
 
   return (
     <View style={{ flex: 1 }}>

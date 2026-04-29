@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
   loadingText: { ...typography.body, color: colors.textMuted },
   callout: { padding: 8, minWidth: 120 },
-  calloutId: { fontWeight: '700', fontSize: 13, color: '#1A1A2E' },
+  calloutId: { fontWeight: '700', fontSize: 13, color: '#1e293b' },
   calloutLevel: { fontSize: 12, color: '#6B7280', marginTop: 2 },
   errorBanner: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, backgroundColor: colors.status.critical + 'EE', paddingVertical: 10, paddingHorizontal: spacing.base },
   errorBannerText: { color: '#fff', fontWeight: '600', fontSize: 13 },
