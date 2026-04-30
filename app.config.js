@@ -1,7 +1,7 @@
 export default {
   expo: {
     name: "FloodWatch",
-    slug: "flood-mobile-app",
+    slug: "flood-mobile-community",
     owner: "alwin523",
     version: "1.0.0",
     orientation: "portrait",
