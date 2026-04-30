@@ -14,6 +14,14 @@ const fs   = require('fs');
 const ROOT     = path.join(__dirname, '..');
 const KEYSTORE = path.join(ROOT, 'android', 'app', 'debug.keystore');
 
+// On EAS, the build server manages credentials. More importantly, running
+// keytool here creates android/app/ which causes expo prebuild to see an
+// existing android/ directory and say "reusing" instead of generating a
+// complete fresh project (with gradle-wrapper.jar). Exit early on EAS.
+if (process.env.EAS_BUILD) {
+  process.exit(0);
+}
+
 if (fs.existsSync(KEYSTORE)) {
   // Already exists — nothing to do
   process.exit(0);
