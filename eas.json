@@ -26,9 +26,6 @@
       "ios": {
         "simulator": false
       },
-      "hooks": {
-        "pre_install": "rm -rf android ios"
-      },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
         "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
@@ -73,9 +70,6 @@
       "ios": {
         "simulator": false
       },
-      "hooks": {
-        "pre_install": "rm -rf android ios"
-      },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
         "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
@@ -90,9 +84,6 @@
       },
       "ios": {
         "simulator": false
-      },
-      "hooks": {
-        "pre_install": "rm -rf android ios"
       },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
