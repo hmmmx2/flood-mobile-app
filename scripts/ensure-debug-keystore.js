@@ -14,11 +14,23 @@ const fs   = require('fs');
 const ROOT     = path.join(__dirname, '..');
 const KEYSTORE = path.join(ROOT, 'android', 'app', 'debug.keystore');
 
-// On EAS, the build server manages credentials. More importantly, running
-// keytool here creates android/app/ which causes expo prebuild to see an
-// existing android/ directory and say "reusing" instead of generating a
-// complete fresh project (with gradle-wrapper.jar). Exit early on EAS.
+// On EAS, clean any stale android/ directory that is missing gradle-wrapper.jar.
+// This happens when the EAS workspace reuses a directory left over from a
+// previous failed build (e.g. the old ensure-debug-keystore bug created
+// android/app/ via keytool, which made expo prebuild say "reusing /android"
+// but skip generating gradle-wrapper.jar). Deleting stale android/ forces
+// expo prebuild to regenerate a complete fresh project in the PREBUILD phase.
+//
+// Safety: when expo prebuild itself runs npm install (after generating android/),
+// this postinstall fires again. At that point gradle-wrapper.jar already exists,
+// so the guard below correctly skips the deletion.
 if (process.env.EAS_BUILD) {
+  const androidDir = path.join(ROOT, 'android');
+  const gradleJar  = path.join(androidDir, 'gradle', 'wrapper', 'gradle-wrapper.jar');
+  if (fs.existsSync(androidDir) && !fs.existsSync(gradleJar)) {
+    fs.rmSync(androidDir, { recursive: true, force: true });
+    console.log('[ensure-debug-keystore] Deleted stale android/ (gradle-wrapper.jar was missing).');
+  }
   process.exit(0);
 }
 
