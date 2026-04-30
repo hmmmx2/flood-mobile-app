@@ -26,11 +26,11 @@ import type { LoginResponseDto, RefreshResponseDto } from './types';
 const AUTH_BASE_URL =
   process.env.EXPO_PUBLIC_AUTH_API_URL
   ?? process.env.EXPO_PUBLIC_API_BASE_URL
-  ?? 'https://flood-service-community.up.railway.app';
+  ?? 'https://flood-service-community-production.up.railway.app';
 
 const CRM_BASE_URL =
   process.env.EXPO_PUBLIC_CRM_API_URL
-  ?? 'https://flood-service-crm.up.railway.app';
+  ?? 'https://flood-service-crm-production.up.railway.app';
 
 if (__DEV__ && !process.env.EXPO_PUBLIC_AUTH_API_URL) {
   console.info(

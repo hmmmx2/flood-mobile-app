@@ -12,9 +12,14 @@
     "test": "jest --runInBand",
     "mock": "cross-env EXPO_PUBLIC_API_MOCKING=enabled expo start --dev-client --lan",
     "postinstall": "node scripts/ensure-debug-keystore.js",
+    "build:dev-cloud": "eas build --profile dev-cloud --platform android",
+    "build:dev-cloud:ios": "eas build --profile dev-cloud --platform ios",
+    "build:dev-cloud:all": "eas build --profile dev-cloud --platform all",
     "build:preview": "eas build --profile preview --platform android",
     "build:staging": "eas build --profile staging --platform android",
+    "build:staging:ios": "eas build --profile staging --platform ios",
     "build:production": "eas build --profile production --platform android",
+    "build:production:ios": "eas build --profile production --platform ios",
     "build:apk": "eas build --profile preview --platform android"
   },
   "dependencies": {

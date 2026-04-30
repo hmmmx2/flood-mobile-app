@@ -17,6 +17,23 @@
       }
     },
 
+    "dev-cloud": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": false
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_CRM_API_URL":  "https://flood-service-crm-production.up.railway.app",
+        "EXPO_PUBLIC_AI_API_URL":   "https://flood-ai-prediction.up.railway.app"
+      }
+    },
+
     "kong-local": {
       "distribution": "internal",
       "android": {
@@ -54,10 +71,10 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL":   "https://flood-service-community.up.railway.app",
-        "EXPO_PUBLIC_AUTH_API_URL":   "https://flood-service-community.up.railway.app",
-        "EXPO_PUBLIC_CRM_API_URL":    "https://flood-service-crm.up.railway.app",
-        "EXPO_PUBLIC_AI_API_URL":     "https://flood-ai-prediction.up.railway.app"
+        "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_CRM_API_URL":  "https://flood-service-crm-production.up.railway.app",
+        "EXPO_PUBLIC_AI_API_URL":   "https://flood-ai-prediction.up.railway.app"
       }
     },
 
@@ -69,10 +86,10 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL":   "https://flood-service-community.up.railway.app",
-        "EXPO_PUBLIC_AUTH_API_URL":   "https://flood-service-community.up.railway.app",
-        "EXPO_PUBLIC_CRM_API_URL":    "https://flood-service-crm.up.railway.app",
-        "EXPO_PUBLIC_AI_API_URL":     "https://flood-ai-prediction.up.railway.app"
+        "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
+        "EXPO_PUBLIC_CRM_API_URL":  "https://flood-service-crm-production.up.railway.app",
+        "EXPO_PUBLIC_AI_API_URL":   "https://flood-ai-prediction.up.railway.app"
       }
     }
   },
