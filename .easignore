@@ -9,6 +9,9 @@
 # Local environment file (secrets must be set as EAS Secrets instead)
 .env
 
+# node_modules — EAS installs dependencies fresh on the build server
+node_modules/
+
 # Android local build cache
 android/.gradle/
 android/build/
@@ -20,9 +23,6 @@ android/app/build/
 **/*.test.tsx
 **/*.spec.ts
 **/*.spec.tsx
-
-# CI / dev-only scripts
-scripts/
 
 # Docs / reports
 *.md

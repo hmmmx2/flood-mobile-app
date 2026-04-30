@@ -66,7 +66,7 @@ export default {
           android: {
             newArchEnabled: true,
             minSdkVersion: 24,
-            compileSdkVersion: 36,
+            compileSdkVersion: 35,
             targetSdkVersion: 35,
           },
           ios: {
