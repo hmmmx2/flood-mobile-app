@@ -61,24 +61,23 @@ export class AuthHelper {
   }
 
   /**
-   * Logout from the app. Navigates to More → Profile → Logout,
-   * then verifies the login screen is shown.
+   * Logout from the app. Tries community Profile tab first (community users
+   * don't have a More tab), then falls back to the admin More → Logout path.
    */
   async logout(): Promise<void> {
     try {
-      await bottomTabBar.goToMore();
-      await moreScreen.waitForScreen();
-      await moreScreen.tapProfile();
+      // Community role: Profile is a direct tab
+      await bottomTabBar.goToProfile();
       await profileScreen.waitForScreen();
       await profileScreen.logout();
     } catch {
-      // If More → Profile path fails, try More → Logout directly
       try {
+        // Admin role fallback: More tab → logout
         await bottomTabBar.goToMore();
         await moreScreen.tapLogout();
         await moreScreen.dismissNativeAlert('OK');
       } catch {
-        // As a last resort, terminate and restart the app to clear state
+        // Last resort: terminate and restart
         await driver.terminateApp('com.floodcommunity.app');
         await driver.activateApp('com.floodcommunity.app');
       }

@@ -24,19 +24,19 @@ function UserCard({ item }: { item: UserSummaryDto }) {
   const isAdmin  = item.role === 'admin';
 
   return (
-    <View style={uc.card}>
+    <View style={uc.card} testID="user-card">
       <View style={[uc.avatar, isAdmin && uc.avatarAdmin]}>
         <Text style={uc.initials}>{initials}</Text>
       </View>
       <View style={uc.info}>
-        <Text style={uc.name}>{item.firstName} {item.lastName}</Text>
+        <Text style={uc.name} testID="user-card-name">{item.firstName} {item.lastName}</Text>
         <Text style={uc.email} numberOfLines={1}>{item.email}</Text>
         <Text style={uc.joined}>
           Joined {new Date(item.createdAt).toLocaleDateString('en-MY', { month: 'short', year: 'numeric' })}
         </Text>
       </View>
       <View style={[uc.rolePill, isAdmin ? uc.adminPill : uc.userPill]}>
-        <Text style={[uc.roleText, isAdmin ? uc.adminText : uc.userText]}>
+        <Text style={[uc.roleText, isAdmin ? uc.adminText : uc.userText]} testID="user-card-role">
           {item.role.toUpperCase()}
         </Text>
       </View>
@@ -126,6 +126,7 @@ export default function UsersScreen() {
       <View style={s.searchRow}>
         <Ionicons name="search-outline" size={16} color={colors.textMuted} />
         <TextInput
+          testID="users-search-input"
           style={s.searchInput}
           value={search}
           onChangeText={setSearch}
@@ -155,6 +156,7 @@ export default function UsersScreen() {
         <ActivityIndicator color={colors.primary} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
+          testID="users-list"
           data={displayed}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <UserCard item={item} />}

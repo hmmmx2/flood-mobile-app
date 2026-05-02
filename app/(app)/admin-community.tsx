@@ -38,7 +38,7 @@ function PostCard({ item, onDelete }: { item: AdminPostDto; onDelete: (id: strin
   const initials = (item.authorName?.[0] ?? 'U').toUpperCase();
 
   return (
-    <View style={pc.card}>
+    <View style={pc.card} testID="admin-community-post-card">
       <View style={pc.authorRow}>
         <View style={pc.avatar}>
           <Text style={pc.avatarText}>{initials}</Text>
@@ -58,6 +58,7 @@ function PostCard({ item, onDelete }: { item: AdminPostDto; onDelete: (id: strin
             ])
           }
           hitSlop={8}
+          testID="admin-post-delete"
         >
           <Ionicons name="trash-outline" size={16} color={colors.status.critical} />
         </TouchableOpacity>
@@ -227,6 +228,7 @@ export default function AdminCommunityScreen() {
         <ActivityIndicator color={colors.primary} style={{ marginTop: 60 }} />
       ) : tab === 'posts' ? (
         <FlatList
+          testID="admin-community-list"
           data={posts}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (

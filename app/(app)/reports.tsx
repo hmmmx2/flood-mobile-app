@@ -54,7 +54,7 @@ function ReportCard({
   const stColor  = statusColor(item.status);
 
   return (
-    <View style={rc.card}>
+    <View style={rc.card} testID="report-card">
       <View style={rc.header}>
         <View style={[rc.severityDot, { backgroundColor: sevColor }]} />
         <View style={rc.headerInfo}>
@@ -72,7 +72,7 @@ function ReportCard({
           <Text style={rc.time}>{relativeTime(item.submittedAt)}</Text>
         </View>
         <View style={[rc.statusPill, { backgroundColor: stColor + '20', borderColor: stColor + '50' }]}>
-          <Text style={[rc.statusText, { color: stColor }]}>{item.status.toUpperCase()}</Text>
+          <Text style={[rc.statusText, { color: stColor }]} testID="report-card-status">{item.status.toUpperCase()}</Text>
         </View>
       </View>
 
@@ -95,6 +95,7 @@ function ReportCard({
             style={[rc.actionBtn, { borderColor: colors.status.watch }]}
             onPress={() => onUpdateStatus(item.id, 'reviewed')}
             disabled={isUpdating}
+            testID="report-mark-reviewed"
           >
             {isUpdating
               ? <ActivityIndicator size="small" color={colors.status.watch} />
@@ -105,6 +106,7 @@ function ReportCard({
             style={[rc.actionBtn, { borderColor: colors.status.normal }]}
             onPress={() => onUpdateStatus(item.id, 'resolved')}
             disabled={isUpdating}
+            testID="report-mark-resolved"
           >
             {isUpdating
               ? <ActivityIndicator size="small" color={colors.status.normal} />
@@ -119,6 +121,7 @@ function ReportCard({
             style={[rc.actionBtn, { borderColor: colors.status.normal }]}
             onPress={() => onUpdateStatus(item.id, 'resolved')}
             disabled={isUpdating}
+            testID="report-mark-resolved"
           >
             <Text style={[rc.actionBtnText, { color: colors.status.normal }]}>Mark Resolved</Text>
           </TouchableOpacity>
@@ -205,6 +208,7 @@ export default function ReportsScreen() {
             key={f.key}
             style={[s.filterTab, filter === f.key && s.filterTabActive]}
             onPress={() => setFilter(f.key)}
+            testID={`reports-filter-${f.key}`}
           >
             <Text style={[s.filterText, filter === f.key && s.filterTextActive]}>{f.label}</Text>
           </TouchableOpacity>
@@ -215,6 +219,7 @@ export default function ReportsScreen() {
         <ActivityIndicator color={colors.primary} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
+          testID="reports-list"
           data={displayed}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (

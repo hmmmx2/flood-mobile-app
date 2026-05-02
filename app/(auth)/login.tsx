@@ -105,7 +105,7 @@ export default function LoginScreen() {
 
             {/* Error banner */}
             {!!error && (
-              <View style={styles.errorBanner}>
+              <View testID="login-error-banner" style={styles.errorBanner}>
                 <Ionicons name="alert-circle-outline" size={15} color="#DC2626" />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
@@ -120,6 +120,7 @@ export default function LoginScreen() {
                 onChangeText={setEmail}
                 onFocus={() => setFocused('email')}
                 onBlur={() => setFocused(null)}
+                testID="email-input"
                 placeholder="Enter your email"
                 placeholderTextColor={MUTED}
                 autoCapitalize="none"
@@ -137,6 +138,7 @@ export default function LoginScreen() {
               <View style={[styles.passwordWrap, focused === 'password' && styles.inputFocused]}>
                 <TextInput
                   ref={pwRef}
+                  testID="password-input"
                   style={styles.passwordInput}
                   value={password}
                   onChangeText={setPassword}
@@ -170,13 +172,14 @@ export default function LoginScreen() {
                 </View>
                 <Text style={styles.rememberText}>Remember me</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+              <TouchableOpacity testID="forgot-password-link" onPress={() => router.push('/(auth)/forgot-password')}>
                 <Text style={styles.forgotText}>Forgot password?</Text>
               </TouchableOpacity>
             </View>
 
             {/* Submit */}
             <TouchableOpacity
+              testID="login-button"
               style={[styles.btn, !canSubmit && styles.btnDisabled]}
               onPress={handleLogin}
               disabled={!canSubmit}
@@ -192,6 +195,7 @@ export default function LoginScreen() {
 
           {/* Register link */}
           <TouchableOpacity
+            testID="register-link"
             style={styles.switchRow}
             onPress={() => router.push('/(auth)/register')}
           >

@@ -143,7 +143,7 @@ export default function MapScreen() {
   }), [nodes, pinnedIds]);
 
   return (
-    <View style={styles.screen}>
+    <View style={styles.screen} testID="map-view">
       <SafeAreaView edges={['top']} style={styles.headerWrap}>
         <View style={styles.header}>
           <View>
@@ -188,10 +188,11 @@ export default function MapScreen() {
               pinColor={pinnedIds.has(node.nodeId) ? '#F59E0B' : markerColor(node)}
               zIndex={pinnedIds.has(node.nodeId) ? 999 : 0}
               onPress={() => setSelected(node)}
+              testID="map-marker"
             >
-              <Callout tooltip={false}>
+              <Callout tooltip={false} testID="map-marker-callout">
                 <View style={styles.callout}>
-                  <Text style={styles.calloutId}>{node.nodeId}</Text>
+                  <Text style={styles.calloutId} testID="map-callout-title">{node.nodeId}</Text>
                   <Text style={styles.calloutLevel}>{node.isDead ? 'Offline' : LEVEL_LABEL[node.currentLevel]}{!node.isDead && ` · ${WATER_LEVEL_M[node.currentLevel]}`}</Text>
                 </View>
               </Callout>

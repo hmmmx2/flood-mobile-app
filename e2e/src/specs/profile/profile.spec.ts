@@ -13,7 +13,6 @@
 
 import { expect } from '@wdio/globals';
 import { profileScreen } from '../../pageObjects/ProfileScreen';
-import { moreScreen } from '../../pageObjects/MoreScreen';
 import { loginScreen } from '../../pageObjects/LoginScreen';
 import { bottomTabBar } from '../../pageObjects/BottomTabBar';
 import { authHelper } from '../../helpers/AuthHelper';
@@ -22,9 +21,7 @@ import { REGULAR_USER } from '../../data/TestData';
 describe('Profile Screen', () => {
   // Navigate to profile before each test
   async function navigateToProfile(): Promise<void> {
-    await bottomTabBar.goToMore();
-    await moreScreen.waitForScreen();
-    await moreScreen.tapProfile();
+    await bottomTabBar.goToProfile();
     await profileScreen.waitForScreen();
   }
 

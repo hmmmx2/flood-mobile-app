@@ -137,9 +137,10 @@ function AdminSensorsScreen() {
         <ActivityIndicator color={ac.primary} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
+          testID="admin-sensors-list"
           data={filtered}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <NodeCard node={item} />}
+          renderItem={({ item }) => <View testID="admin-sensor-card"><NodeCard node={item} /></View>}
           contentContainerStyle={{ padding: asp.base, paddingBottom: asp.xxl }}
           ItemSeparatorComponent={() => <View style={{ height: asp.sm }} />}
           ListEmptyComponent={<EmptyState icon="radio-outline" title="No nodes found" message={search || filter !== 'all' ? 'Try clearing your search or filter.' : 'No sensor nodes are registered yet.'} />}
@@ -188,7 +189,7 @@ function FavouriteCard({ node, onNavigate, onRemove }: {
   const water  = isOffline ? '—'        : WATER_M[node.currentLevel];
 
   return (
-    <TouchableOpacity style={favStyles.card} onPress={() => onNavigate(node)} activeOpacity={0.85}>
+    <TouchableOpacity testID="sensor-favourite-card" style={favStyles.card} onPress={() => onNavigate(node)} activeOpacity={0.85}>
       {/* Accent top bar */}
       <View style={[favStyles.accentBar, { backgroundColor: color }]} />
 
@@ -242,7 +243,7 @@ function NodeRow({ node, isFav, onToggle }: {
   const location = [node.area, node.state].filter(Boolean).join(' · ');
 
   return (
-    <View style={rowStyles.card}>
+    <View testID="sensor-card" style={rowStyles.card}>
       {/* Left accent stripe */}
       <View style={[rowStyles.stripe, { backgroundColor: color }]} />
 
@@ -251,7 +252,7 @@ function NodeRow({ node, isFav, onToggle }: {
         <View style={rowStyles.topRow}>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={rowStyles.nodeId} numberOfLines={1}>{node.nodeId}</Text>
-            {!!node.name && <Text style={rowStyles.nodeName} numberOfLines={1}>{node.name}</Text>}
+            {!!node.name && <Text testID="sensor-card-name" style={rowStyles.nodeName} numberOfLines={1}>{node.name}</Text>}
           </View>
           <TouchableOpacity
             onPress={() => onToggle(node)}
@@ -271,9 +272,9 @@ function NodeRow({ node, isFav, onToggle }: {
         <View style={rowStyles.metricsRow}>
           <View style={[rowStyles.statusBadge, { backgroundColor: color + '18' }]}>
             <View style={[rowStyles.statusDot, { backgroundColor: color }]} />
-            <Text style={[rowStyles.statusText, { color }]}>{label}</Text>
+            <Text testID="sensor-card-status" style={[rowStyles.statusText, { color }]}>{label}</Text>
           </View>
-          <View style={rowStyles.waterChip}>
+          <View testID="sensor-card-reading" style={rowStyles.waterChip}>
             <Ionicons name="water-outline" size={13} color={color} />
             <Text style={[rowStyles.waterText, { color }]}>{water}</Text>
           </View>
@@ -353,6 +354,7 @@ function CommunitySensorsScreen() {
         <ActivityIndicator size="large" color={BRAND} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
+          testID="sensors-list"
           data={filteredNodes}
           keyExtractor={(n) => n.id}
           renderItem={({ item }) => (
@@ -380,7 +382,7 @@ function CommunitySensorsScreen() {
               {/* ── Favourites strip ── */}
               {favNodes.length > 0 && (
                 <View style={commStyles.favSection}>
-                  <View style={commStyles.favHeader}>
+                  <View testID="sensors-favourites-header" style={commStyles.favHeader}>
                     <Ionicons name="heart" size={15} color="#EF4444" />
                     <Text style={commStyles.favTitle}>Favourites</Text>
                     <View style={commStyles.favCount}>
@@ -409,6 +411,7 @@ function CommunitySensorsScreen() {
                 <View style={commStyles.searchBox}>
                   <Ionicons name="search-outline" size={16} color={MUTED} />
                   <TextInput
+                    testID="sensor-search-input"
                     style={commStyles.searchInput}
                     value={search}
                     onChangeText={setSearch}
@@ -427,6 +430,7 @@ function CommunitySensorsScreen() {
 
               {/* ── Filter chips ── */}
               <ScrollView
+                testID="sensors-filter-bar"
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={commStyles.filterRow}

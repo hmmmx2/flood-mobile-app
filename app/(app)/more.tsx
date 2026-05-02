@@ -83,7 +83,7 @@ function ProfileCard({
         <Text style={pc.initials}>{initials || '?'}</Text>
       </View>
       <View style={pc.info}>
-        <Text style={pc.name}>{fullName}</Text>
+        <Text style={pc.name} testID="more-username">{fullName}</Text>
         <Text style={pc.email}>{email ?? '—'}</Text>
         <View style={pc.rolePill}>
           <Text style={pc.roleText}>ADMIN</Text>
@@ -422,13 +422,13 @@ const tog = StyleSheet.create({
 // ── Menu row ──────────────────────────────────────────────────────────────────
 
 function MenuRow({
-  icon, label, onPress, destructive,
+  icon, label, onPress, destructive, testID,
 }: {
-  icon: string; label: string; onPress: () => void; destructive?: boolean;
+  icon: string; label: string; onPress: () => void; destructive?: boolean; testID?: string;
 }) {
   const tint = destructive ? colors.status.critical : colors.textSecondary;
   return (
-    <TouchableOpacity style={mr.row} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={mr.row} onPress={onPress} activeOpacity={0.7} testID={testID}>
       <View style={[mr.iconWrap, destructive && { backgroundColor: colors.status.critical + '15' }]}>
         <Ionicons name={icon as any} size={18} color={tint} />
       </View>
@@ -575,7 +575,7 @@ export default function MoreScreen() {
 
         <Card>
           <View style={styles.lastMenuRow}>
-            <MenuRow icon="key-outline" label="Change Password" onPress={() => setChangePassOpen(true)} />
+            <MenuRow icon="key-outline" label="Change Password" onPress={() => setChangePassOpen(true)} testID="more-change-password-item" />
           </View>
         </Card>
 
@@ -646,12 +646,12 @@ export default function MoreScreen() {
         {/* ── Management ───────────────────────────────────────────────── */}
         <SectionHeading title="Management" />
         <Card>
-          <MenuRow icon="bar-chart-outline"     label="Analytics"             onPress={() => router.push('/(app)/analytics' as any)} />
-          <MenuRow icon="document-text-outline" label="Incident Reports"      onPress={() => router.push('/(app)/reports' as any)} />
-          <MenuRow icon="people-outline"        label="User Management"       onPress={() => router.push('/(app)/users' as any)} />
-          <MenuRow icon="newspaper-outline"     label="Blog Management"       onPress={() => router.push('/(app)/admin-blogs' as any)} />
+          <MenuRow icon="bar-chart-outline"     label="Analytics"             onPress={() => router.push('/(app)/analytics' as any)} testID="more-analytics-item" />
+          <MenuRow icon="document-text-outline" label="Incident Reports"      onPress={() => router.push('/(app)/reports' as any)} testID="more-reports-item" />
+          <MenuRow icon="people-outline"        label="User Management"       onPress={() => router.push('/(app)/users' as any)} testID="more-users-item" />
+          <MenuRow icon="newspaper-outline"     label="Blog Management"       onPress={() => router.push('/(app)/admin-blogs' as any)} testID="more-admin-blogs-item" />
           <View style={styles.lastMenuRow}>
-            <MenuRow icon="chatbubbles-outline" label="Community Moderation"  onPress={() => router.push('/(app)/admin-community' as any)} />
+            <MenuRow icon="chatbubbles-outline" label="Community Moderation"  onPress={() => router.push('/(app)/admin-community' as any)} testID="more-admin-community-item" />
           </View>
         </Card>
 
@@ -676,7 +676,7 @@ export default function MoreScreen() {
         <SectionHeading title="Session" />
         <Card>
           <View style={styles.lastMenuRow}>
-            <MenuRow icon="log-out-outline" label="Sign Out" onPress={handleLogout} destructive />
+            <MenuRow icon="log-out-outline" label="Sign Out" onPress={handleLogout} destructive testID="more-logout-item" />
           </View>
         </Card>
 

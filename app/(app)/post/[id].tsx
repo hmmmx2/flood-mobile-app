@@ -143,7 +143,7 @@ export default function PostDetailScreen() {
     return (
       <SafeAreaView style={s.screen} edges={['top']}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
+          <TouchableOpacity testID="post-detail-back" onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
             <Ionicons name="arrow-back" size={24} color={TEXT} />
           </TouchableOpacity>
           <Text style={s.headerTitle}>Post</Text>
@@ -158,7 +158,7 @@ export default function PostDetailScreen() {
     return (
       <SafeAreaView style={s.screen} edges={['top']}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
+          <TouchableOpacity testID="post-detail-back" onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
             <Ionicons name="arrow-back" size={24} color={TEXT} />
           </TouchableOpacity>
           <Text style={s.headerTitle}>Post</Text>
@@ -207,7 +207,7 @@ export default function PostDetailScreen() {
           ListHeaderComponent={
             <View>
               {/* Post card */}
-              <View style={s.postCard}>
+              <View testID="post-detail-content" style={s.postCard}>
                 <View style={s.authorRow}>
                   <View style={s.avatar}>
                     <Text style={s.avatarText}>{getInitials(post.authorName)}</Text>
@@ -224,7 +224,7 @@ export default function PostDetailScreen() {
                 {!!post.content && <Text style={s.postContent}>{post.content}</Text>}
                 {/* Actions */}
                 <View style={s.actionRow}>
-                  <TouchableOpacity style={s.actionBtn} onPress={() => likeMutation.mutate()} activeOpacity={0.7}>
+                  <TouchableOpacity testID="post-detail-like" style={s.actionBtn} onPress={() => likeMutation.mutate()} activeOpacity={0.7}>
                     <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={16} color={post.likedByMe ? BRAND : MUTED} />
                     <Text style={[s.actionText, post.likedByMe && { color: BRAND }]}>{Math.max(0, post.likesCount)}</Text>
                   </TouchableOpacity>

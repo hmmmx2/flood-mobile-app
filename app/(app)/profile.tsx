@@ -220,9 +220,9 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
 
   const canSubmit = firstName.trim().length > 0 && lastName.trim().length > 0 && !updateMutation.isPending;
 
-  const fields: Array<{ label: string; placeholder: string; value: string; set: (v: string) => void; optional?: boolean; keyboard?: any; capitalize?: any }> = [
-    { label: 'First Name',  placeholder: 'First name',          value: firstName, set: setFirstName, capitalize: 'words' },
-    { label: 'Last Name',   placeholder: 'Last name',           value: lastName,  set: setLastName,  capitalize: 'words' },
+  const fields: Array<{ label: string; placeholder: string; value: string; set: (v: string) => void; optional?: boolean; keyboard?: any; capitalize?: any; testID?: string }> = [
+    { label: 'First Name',  placeholder: 'First name',          value: firstName, set: setFirstName, capitalize: 'words', testID: 'edit-first-name-input' },
+    { label: 'Last Name',   placeholder: 'Last name',           value: lastName,  set: setLastName,  capitalize: 'words', testID: 'edit-last-name-input' },
     { label: 'Phone',       placeholder: '+60 12-345 6789',     value: phone,     set: setPhone,     optional: true, keyboard: 'phone-pad' },
     { label: 'Location',    placeholder: 'e.g. Kuala Lumpur',   value: location,  set: setLocation,  optional: true, capitalize: 'words' },
   ];
@@ -257,6 +257,7 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
               {f.optional && <Text style={epStyles.optional}> (optional)</Text>}
             </Text>
             <TextInput
+              testID={f.testID}
               style={epStyles.input}
               value={f.value}
               onChangeText={f.set}
@@ -282,6 +283,7 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
           />
         </View>
         <TouchableOpacity
+          testID="edit-save-button"
           style={[epStyles.submitBtn, !canSubmit && epStyles.submitBtnDisabled]}
           onPress={() => updateMutation.mutate()}
           disabled={!canSubmit}
@@ -413,14 +415,14 @@ export default function ProfileScreen() {
                 <Text style={s.avatarText}>{initials}</Text>
               </View>
             )}
-            <TouchableOpacity style={s.avatarEditBtn} onPress={() => setEditOpen(true)} activeOpacity={0.8}>
+            <TouchableOpacity testID="edit-profile-button" style={s.avatarEditBtn} onPress={() => setEditOpen(true)} activeOpacity={0.8}>
               <Ionicons name="pencil" size={12} color="#fff" />
             </TouchableOpacity>
           </View>
 
           {/* Identity */}
-          <Text style={s.heroName}>{fullName}</Text>
-          <Text style={s.heroEmail}>{user.email}</Text>
+          <Text testID="profile-name" style={s.heroName}>{fullName}</Text>
+          <Text testID="profile-email" style={s.heroEmail}>{user.email}</Text>
 
           {/* Role badge */}
           <View style={[s.roleBadge, user.role === 'admin' && s.roleBadgeAdmin]}>
@@ -515,7 +517,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Sign out ───────────────────────────────────────────────────── */}
-        <TouchableOpacity style={s.signOutBtn} onPress={handleSignOut} activeOpacity={0.85}>
+        <TouchableOpacity testID="logout-button" style={s.signOutBtn} onPress={handleSignOut} activeOpacity={0.85}>
           <Ionicons name="log-out-outline" size={18} color={DANGER} />
           <Text style={s.signOutText}>Sign Out</Text>
         </TouchableOpacity>

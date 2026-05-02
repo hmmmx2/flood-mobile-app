@@ -64,7 +64,7 @@ export default function GroupDetailScreen() {
     return (
       <SafeAreaView style={s.screen} edges={['top']}>
         <View style={s.header}>
-          <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
+          <TouchableOpacity testID="group-detail-back" onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
             <Ionicons name="arrow-back" size={24} color={TEXT} />
           </TouchableOpacity>
           <Text style={s.headerTitle}>Group</Text>
@@ -87,10 +87,10 @@ export default function GroupDetailScreen() {
   return (
     <SafeAreaView style={s.screen} edges={['top']}>
       <View style={s.header}>
-        <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
+        <TouchableOpacity testID="group-detail-back" onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
           <Ionicons name="arrow-back" size={24} color={TEXT} />
         </TouchableOpacity>
-        <Text style={s.headerTitle} numberOfLines={1}>{group?.name ?? 'Group'}</Text>
+        <Text testID="group-detail-title" style={s.headerTitle} numberOfLines={1}>{group?.name ?? 'Group'}</Text>
         <View style={{ width: 40 }} />
       </View>
 

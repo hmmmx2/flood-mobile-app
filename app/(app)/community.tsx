@@ -108,6 +108,7 @@ function GroupRow({
 
   return (
     <Pressable
+      testID="group-card"
       style={styles.groupRow}
       onPress={() => router.push(`/(app)/g/${group.slug}` as any)}
       android_ripple={{ color: 'rgba(0,0,0,0.04)', borderless: false }}
@@ -356,6 +357,7 @@ export default function CommunityScreen() {
       </View>
 
       <ScrollView
+        testID="community-list"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"

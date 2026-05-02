@@ -93,6 +93,58 @@ export class BottomTabBar extends BasePage {
     }
   }
 
+  /** Broadcasts tab (admin role direct tab) */
+  get broadcastsTab(): ChainablePromiseElement {
+    return this.el('tab-broadcasts');
+  }
+
+  async goToBroadcasts(): Promise<void> {
+    try {
+      await this.broadcastsTab.click();
+    } catch {
+      await this.tabByLabel('Broadcasts').click();
+    }
+  }
+
+  /** Alerts tab (community role direct tab) */
+  get alertsTab(): ChainablePromiseElement {
+    return this.el('tab-alerts');
+  }
+
+  /** Sensors tab (community + admin direct tab) */
+  get sensorsTab(): ChainablePromiseElement {
+    return this.el('tab-sensors');
+  }
+
+  /** Profile tab (community role direct tab) */
+  get profileTab(): ChainablePromiseElement {
+    return this.el('tab-profile');
+  }
+
+  async goToAlerts(): Promise<void> {
+    try {
+      await this.alertsTab.click();
+    } catch {
+      await this.tabByLabel('Alerts').click();
+    }
+  }
+
+  async goToSensors(): Promise<void> {
+    try {
+      await this.sensorsTab.click();
+    } catch {
+      await this.tabByLabel('Sensors').click();
+    }
+  }
+
+  async goToProfile(): Promise<void> {
+    try {
+      await this.profileTab.click();
+    } catch {
+      await this.tabByLabel('Profile').click();
+    }
+  }
+
   /**
    * Check whether a specific tab is currently selected/active.
    * React Navigation sets aria-selected on the active tab item.

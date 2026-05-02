@@ -185,6 +185,7 @@ function AdminDashboardScreen() {
     <View style={{ flex: 1, backgroundColor: ac.background }}>
       <ScreenHeader title="Dashboard" subtitle="Live sensor overview" rightAction={{ icon: 'refresh-outline', onPress: refetch }} />
       <ScrollView
+        testID="dashboard-view"
         contentContainerStyle={{ paddingTop: asp.base, paddingBottom: asp.xxl }}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={ac.primary} />}
@@ -272,7 +273,7 @@ const PostCard = React.memo(function PostCard({ post, onLike, onPress }: PostCar
   const avatarColor = nameToColor(post.authorName);
 
   return (
-    <View style={feedStyles.card}>
+    <View style={feedStyles.card} testID="post-card">
       <Pressable onPress={onPress} android_ripple={{ color: 'rgba(0,0,0,0.04)', borderless: false }} style={{ gap: 10 }}>
         <View style={feedStyles.cardHeader}>
           <View style={[feedStyles.avatar, { backgroundColor: avatarColor }]}>
@@ -391,6 +392,7 @@ function CustomerFeedScreen() {
       </View>
 
       <FlatList
+        testID="post-feed"
         ref={listRef}
         data={posts}
         keyExtractor={(item) => item.id}
@@ -404,7 +406,7 @@ function CustomerFeedScreen() {
         windowSize={5}
         ListHeaderComponent={
           <View>
-            <TouchableOpacity style={feedStyles.createBar} onPress={() => user && setCreateVisible(true)} activeOpacity={0.85}>
+            <TouchableOpacity testID="create-post-bar" style={feedStyles.createBar} onPress={() => user && setCreateVisible(true)} activeOpacity={0.85}>
               <View style={feedStyles.createAvatar}><Text style={feedStyles.createAvatarText}>{userInitials}</Text></View>
               <View style={feedStyles.createInputFake}>
                 <Text style={feedStyles.createPlaceholder}>{user ? 'Share a flood update…' : 'Sign in to share updates'}</Text>

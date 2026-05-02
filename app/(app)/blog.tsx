@@ -171,6 +171,7 @@ function BlogCard({ blog, featured = false, isSaved, onToggleSave }: BlogCardPro
 
         {/* Title */}
         <Text
+          testID="blog-card-title"
           style={[styles.cardTitle, featured && styles.featuredTitle]}
           numberOfLines={2}
         >
@@ -237,10 +238,11 @@ export default function BlogScreen() {
       </View>
 
       <FlatList
+        testID="blog-list"
         data={filtered}
         keyExtractor={(b) => b.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(`/(app)/blog/${item.id}` as any)} activeOpacity={0.97}>
+          <TouchableOpacity testID="blog-card" onPress={() => router.push(`/(app)/blog/${item.id}` as any)} activeOpacity={0.97}>
             <BlogCard
               blog={item}
               isSaved={favBlogs.includes(item.id)}

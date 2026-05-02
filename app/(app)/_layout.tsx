@@ -128,6 +128,7 @@ export default function AppLayout() {
         name="index"
         options={{
           title: isAdmin ? 'Dashboard' : 'Feed',
+          tabBarAccessibilityLabel: 'tab-home',
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name={isAdmin ? 'speedometer-outline' : 'home-outline'}
@@ -144,6 +145,7 @@ export default function AppLayout() {
         options={{
           title: 'Community',
           href: isAdmin ? null : undefined,
+          tabBarAccessibilityLabel: 'tab-community',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
           ),
@@ -156,6 +158,7 @@ export default function AppLayout() {
         options={{
           title: 'Blog',
           href: isAdmin ? null : undefined,
+          tabBarAccessibilityLabel: 'tab-blog',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="newspaper-outline" size={size} color={color} />
           ),
@@ -168,6 +171,7 @@ export default function AppLayout() {
         options={{
           title: 'Alerts',
           tabBarBadge: alertBadge,
+          tabBarAccessibilityLabel: 'tab-alerts',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="alert-circle-outline" size={size} color={color} />
           ),
@@ -179,6 +183,7 @@ export default function AppLayout() {
         name="sensors"
         options={{
           title: 'Sensors',
+          tabBarAccessibilityLabel: 'tab-sensors',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="radio-outline" size={size} color={color} />
           ),
@@ -191,6 +196,7 @@ export default function AppLayout() {
         options={{
           title: 'Profile',
           href: isAdmin ? null : undefined,
+          tabBarAccessibilityLabel: 'tab-profile',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />
           ),
@@ -203,6 +209,7 @@ export default function AppLayout() {
         options={{
           title: 'Map',
           href: isAdmin ? undefined : null,
+          tabBarAccessibilityLabel: 'tab-map',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" size={size} color={color} />
           ),
@@ -215,6 +222,7 @@ export default function AppLayout() {
         options={{
           title: 'Broadcasts',
           href: isAdmin ? undefined : null,
+          tabBarAccessibilityLabel: 'tab-broadcasts',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="megaphone-outline" size={size} color={color} />
           ),
@@ -227,6 +235,7 @@ export default function AppLayout() {
         options={{
           title: 'More',
           href: isAdmin ? undefined : null,
+          tabBarAccessibilityLabel: 'tab-more',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ellipsis-horizontal-circle-outline" size={size} color={color} />
           ),

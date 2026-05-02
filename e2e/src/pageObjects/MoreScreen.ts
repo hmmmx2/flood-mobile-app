@@ -82,6 +82,46 @@ export class MoreScreen extends BasePage {
     await this.logoutItem.click();
   }
 
+  get analyticsItem(): ChainablePromiseElement {
+    return this.el('more-analytics-item');
+  }
+
+  get reportsItem(): ChainablePromiseElement {
+    return this.el('more-reports-item');
+  }
+
+  get usersItem(): ChainablePromiseElement {
+    return this.el('more-users-item');
+  }
+
+  get adminBlogsItem(): ChainablePromiseElement {
+    return this.el('more-admin-blogs-item');
+  }
+
+  get adminCommunityItem(): ChainablePromiseElement {
+    return this.el('more-admin-community-item');
+  }
+
+  async tapAnalytics(): Promise<void> {
+    await this.analyticsItem.click();
+  }
+
+  async tapReports(): Promise<void> {
+    await this.reportsItem.click();
+  }
+
+  async tapUsers(): Promise<void> {
+    await this.usersItem.click();
+  }
+
+  async tapAdminBlogs(): Promise<void> {
+    await this.adminBlogsItem.click();
+  }
+
+  async tapAdminCommunity(): Promise<void> {
+    await this.adminCommunityItem.click();
+  }
+
   async getMenuItemLabels(): Promise<string[]> {
     // Collect all text elements in the more menu (accessible items)
     const items = await $$('android=new UiSelector().className("android.widget.TextView")');

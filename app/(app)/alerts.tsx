@@ -116,9 +116,10 @@ function AdminAlertsScreen() {
         <EmptyState icon="cloud-offline-outline" title="Could not load alerts" message="Check your connection and pull down to retry." />
       ) : (
         <FlatList
+          testID="admin-alerts-list"
           data={filtered}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <AlertCard alert={item} />}
+          renderItem={({ item }) => <View testID="admin-alert-card"><AlertCard alert={item} /></View>}
           contentContainerStyle={{ padding: asp.base, paddingBottom: asp.xxl }}
           ItemSeparatorComponent={() => <View style={{ height: asp.sm }} />}
           ListEmptyComponent={<EmptyState icon="alert-circle-outline" title="No alerts" message={severityFilter !== 'all' ? 'No alerts match this filter.' : 'The system is operating normally.'} />}
@@ -159,7 +160,7 @@ function SeverityBadge({ severity }: { severity: AlertSeverity }) {
   return (
     <View style={[badge.wrap, { backgroundColor: cfg.bg }]}>
       <Ionicons name={cfg.icon} size={11} color={cfg.fg} />
-      <Text style={[badge.text, { color: cfg.fg }]}>{cfg.label}</Text>
+      <Text testID="alert-card-severity" style={[badge.text, { color: cfg.fg }]}>{cfg.label}</Text>
     </View>
   );
 }
@@ -173,7 +174,7 @@ const badge = StyleSheet.create({
 const AlertListItem = React.memo(function AlertListItem({ item }: { item: FeedItemDto }) {
   const cfg = SEV[item.severity];
   return (
-    <View style={[communityStyles.alertCard, { borderLeftColor: cfg.stripe }]}>
+    <View testID="alert-card" style={[communityStyles.alertCard, { borderLeftColor: cfg.stripe }]}>
       {/* Top row: badge + time */}
       <View style={communityStyles.alertTopRow}>
         <SeverityBadge severity={item.severity} />
@@ -267,7 +268,7 @@ function CommunityAlertsScreen() {
           </Text>
         </View>
         {/* Tab toggle */}
-        <View style={communityStyles.tabToggle}>
+        <View testID="alerts-view-toggle" style={communityStyles.tabToggle}>
           {(['list', 'map'] as const).map((t) => (
             <TouchableOpacity
               key={t}
@@ -296,6 +297,7 @@ function CommunityAlertsScreen() {
             return (
               <TouchableOpacity
                 key={f.key}
+                testID={`severity-filter-${f.key}`}
                 style={[
                   communityStyles.filterChip,
                   active && cfg  && { backgroundColor: cfg.stripe,  borderColor: cfg.stripe },
@@ -338,13 +340,14 @@ function CommunityAlertsScreen() {
           </View>
         ) : (
           <FlatList
+            testID="alerts-list"
             data={filtered}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <AlertListItem item={item} />}
             contentContainerStyle={communityStyles.listContent}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             ListEmptyComponent={
-              <View style={communityStyles.centred}>
+              <View testID="alerts-empty-state" style={communityStyles.centred}>
                 <View style={[communityStyles.errIconWrap, { backgroundColor: SEV.normal.bg }]}>
                   <Ionicons name="checkmark-circle" size={36} color={SEV.normal.fg} />
                 </View>

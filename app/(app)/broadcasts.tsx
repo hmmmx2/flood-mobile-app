@@ -32,7 +32,7 @@ function BroadcastCard({ item }: { item: BroadcastDto }) {
   const timestamp = item.sentAt ? new Date(item.sentAt) : null;
 
   return (
-    <View style={card.container}>
+    <View style={card.container} testID="broadcast-card">
       <View style={card.header}>
         <View style={card.titleRow}>
           <Text style={card.title} numberOfLines={2}>{item.title}</Text>
@@ -161,6 +161,7 @@ function ComposeModal({ visible, onClose, onSend, isSending, zones, zonesLoading
             style={[compose.sendBtn, !canSend && compose.sendBtnDisabled]}
             onPress={handleSend}
             disabled={!canSend}
+            testID="broadcast-submit-button"
           >
             {isSending
               ? <ActivityIndicator size="small" color="#fff" />
@@ -173,7 +174,7 @@ function ComposeModal({ visible, onClose, onSend, isSending, zones, zonesLoading
           {/* Severity picker */}
           <View style={compose.field}>
             <Text style={compose.fieldLabel}>SEVERITY</Text>
-            <View style={compose.severityRow}>
+            <View style={compose.severityRow} testID="broadcast-severity-picker">
               {SEVERITY_OPTIONS.map((opt) => (
                 <TouchableOpacity
                   key={opt.value}
@@ -211,7 +212,7 @@ function ComposeModal({ visible, onClose, onSend, isSending, zones, zonesLoading
             {zonesLoading ? (
               <ActivityIndicator size="small" color={colors.primary} style={{ alignSelf: 'flex-start', marginTop: 4 }} />
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={compose.zoneRow}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={compose.zoneRow} testID="broadcast-zone-picker">
                 {/* "All Zones" always first */}
                 <TouchableOpacity
                   style={[compose.zoneChip, targetZone === 'all' && compose.zoneChipActive]}
@@ -267,6 +268,7 @@ function ComposeModal({ visible, onClose, onSend, isSending, zones, zonesLoading
           <View style={compose.field}>
             <Text style={compose.fieldLabel}>MESSAGE</Text>
             <TextInput
+              testID="broadcast-message-input"
               style={[compose.input, compose.textArea]}
               value={body}
               onChangeText={setBody}
@@ -408,6 +410,7 @@ export default function BroadcastsScreen() {
         <ActivityIndicator color={colors.primary} style={styles.loader} />
       ) : (
         <FlatList
+          testID="broadcasts-list"
           data={data ?? []}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <BroadcastCard item={item} />}
@@ -428,7 +431,7 @@ export default function BroadcastsScreen() {
       )}
 
       {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => setComposeOpen(true)} activeOpacity={0.8}>
+      <TouchableOpacity style={styles.fab} onPress={() => setComposeOpen(true)} activeOpacity={0.8} testID="create-broadcast-button">
         <Ionicons name="megaphone" size={20} color="#fff" />
         <Text style={styles.fabText}>New Broadcast</Text>
       </TouchableOpacity>

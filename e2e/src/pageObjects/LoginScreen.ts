@@ -102,27 +102,38 @@ export class LoginScreen extends BasePage {
   }
 
   /**
-   * Wait for and read the native error alert, then dismiss it.
-   * Returns the full message text (title + body concatenated).
+   * Wait for and read the error message, then dismiss if needed.
+   * Reads the inline error banner (login-error-banner) first; falls back
+   * to a native Alert.alert() dialog for network errors.
+   * Returns the full message text, or empty string if no error appears.
    */
   async getErrorAndDismiss(): Promise<string> {
-    let message = '';
+    // login.tsx uses an inline error banner (testID="login-error-banner"), not Alert.alert()
     try {
-      await browser.waitUntil(
-        async () => {
-          try {
-            const t = await browser.getAlertText();
-            return !!t;
-          } catch {
-            return false;
-          }
-        },
-        { timeout: 10000, interval: 500 },
-      );
-      message = (await browser.getAlertText()) ?? '';
-    } catch { /* alert might not appear */ }
-    await this.dismissNativeAlert('OK');
-    return message;
+      const banner = this.el('login-error-banner');
+      await banner.waitForDisplayed({ timeout: 8000 });
+      return await banner.getText();
+    } catch {
+      // Fall back to native Alert.alert() for network errors
+      try {
+        await browser.waitUntil(
+          async () => {
+            try {
+              const t = await browser.getAlertText();
+              return !!t;
+            } catch {
+              return false;
+            }
+          },
+          { timeout: 5000, interval: 300 },
+        );
+        const text = (await browser.getAlertText()) ?? '';
+        await this.dismissNativeAlert('OK');
+        return text;
+      } catch {
+        return '';
+      }
+    }
   }
 
   /** Navigate to the Forgot Password screen. */

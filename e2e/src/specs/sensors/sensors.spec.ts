@@ -17,7 +17,6 @@ import { sensorsScreen } from '../../pageObjects/SensorsScreen';
 import { mapScreen } from '../../pageObjects/MapScreen';
 import { authHelper } from '../../helpers/AuthHelper';
 import { bottomTabBar } from '../../pageObjects/BottomTabBar';
-import { moreScreen } from '../../pageObjects/MoreScreen';
 
 describe('Sensors Screen', () => {
   before(async () => {
@@ -29,10 +28,7 @@ describe('Sensors Screen', () => {
   });
 
   beforeEach(async () => {
-    // Navigate to Sensors via More → Sensors
-    await bottomTabBar.goToMore();
-    await moreScreen.waitForScreen();
-    await moreScreen.tapSensors();
+    await bottomTabBar.goToSensors();
     await sensorsScreen.waitForScreen();
   });
 

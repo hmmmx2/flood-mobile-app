@@ -123,7 +123,7 @@ export default function RegisterScreen() {
 
             {/* Error banner */}
             {!!error && (
-              <View style={styles.errorBanner}>
+              <View testID="register-error-banner" style={styles.errorBanner}>
                 <Ionicons name="alert-circle-outline" size={15} color="#DC2626" />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
@@ -134,6 +134,7 @@ export default function RegisterScreen() {
               <View style={[styles.field, { flex: 1 }]}>
                 <Text style={styles.label}>First Name</Text>
                 <TextInput
+                  testID="first-name-input"
                   style={[styles.input, focused === 'first' && styles.inputFocused]}
                   value={firstName}
                   onChangeText={setFirstName}
@@ -151,6 +152,7 @@ export default function RegisterScreen() {
                 <Text style={styles.label}>Last Name</Text>
                 <TextInput
                   ref={lastRef}
+                  testID="last-name-input"
                   style={[styles.input, focused === 'last' && styles.inputFocused]}
                   value={lastName}
                   onChangeText={setLastName}
@@ -170,6 +172,7 @@ export default function RegisterScreen() {
               <Text style={styles.label}>Email Address</Text>
               <TextInput
                 ref={emailRef}
+                testID="email-input"
                 style={[styles.input, focused === 'email' && styles.inputFocused]}
                 value={email}
                 onChangeText={setEmail}
@@ -191,6 +194,7 @@ export default function RegisterScreen() {
               <View style={[styles.passwordWrap, focused === 'password' && styles.inputFocused]}>
                 <TextInput
                   ref={pwRef}
+                  testID="password-input"
                   style={styles.passwordInput}
                   value={password}
                   onChangeText={setPassword}
@@ -219,6 +223,7 @@ export default function RegisterScreen() {
               <Text style={styles.label}>Confirm Password</Text>
               <TextInput
                 ref={confirmRef}
+                testID="confirm-password-input"
                 style={[
                   styles.input,
                   focused === 'confirm' && styles.inputFocused,
@@ -250,6 +255,7 @@ export default function RegisterScreen() {
 
             {/* Submit */}
             <TouchableOpacity
+              testID="register-button"
               style={[styles.btn, !canSubmit && styles.btnDisabled]}
               onPress={handleRegister}
               disabled={!canSubmit}
@@ -265,6 +271,7 @@ export default function RegisterScreen() {
 
           {/* Login link */}
           <TouchableOpacity
+            testID="login-link"
             style={styles.switchRow}
             onPress={() => router.push('/(auth)/login')}
           >

@@ -16,7 +16,6 @@ import { loginScreen } from '../../pageObjects/LoginScreen';
 import { homeScreen } from '../../pageObjects/HomeScreen';
 import { communityScreen } from '../../pageObjects/CommunityScreen';
 import { blogScreen } from '../../pageObjects/BlogScreen';
-import { mapScreen } from '../../pageObjects/MapScreen';
 import { moreScreen } from '../../pageObjects/MoreScreen';
 import { blogDetailScreen } from '../../pageObjects/BlogDetailScreen';
 import { postDetailScreen } from '../../pageObjects/PostDetailScreen';
@@ -52,11 +51,7 @@ describe('Navigation', () => {
       expect(await blogScreen.blogList.isDisplayed()).toBe(true);
     });
 
-    it('should navigate to Map screen via Map tab', async () => {
-      await bottomTabBar.goToMap();
-      await mapScreen.waitForScreen();
-      expect(await mapScreen.isMapVisible()).toBe(true);
-    });
+    // Note: Map tab navigation is tested in admin spec (admin-only tab)
 
     it('should navigate to More screen via More tab', async () => {
       await bottomTabBar.goToMore();

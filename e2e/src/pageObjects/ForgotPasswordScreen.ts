@@ -94,6 +94,41 @@ export class ForgotPasswordScreen extends BasePage {
     await this.dismissNativeAlert('OK');
     return message;
   }
+
+  /**
+   * Wait for and read the error message, then dismiss if needed.
+   * Reads the inline error banner (forgot-error-banner) first; falls back
+   * to a native Alert.alert() dialog for network errors.
+   * Returns the full message text, or empty string if no error appears.
+   */
+  async getErrorAndDismiss(): Promise<string> {
+    // forgot-password.tsx uses an inline error banner (testID="forgot-error-banner")
+    try {
+      const banner = this.el('forgot-error-banner');
+      await banner.waitForDisplayed({ timeout: 8000 });
+      return await banner.getText();
+    } catch {
+      // Fall back to native Alert.alert() for network errors
+      try {
+        await browser.waitUntil(
+          async () => {
+            try {
+              const t = await browser.getAlertText();
+              return !!t;
+            } catch {
+              return false;
+            }
+          },
+          { timeout: 5000, interval: 300 },
+        );
+        const text = (await browser.getAlertText()) ?? '';
+        await this.dismissNativeAlert('OK');
+        return text;
+      } catch {
+        return '';
+      }
+    }
+  }
 }
 
 export const forgotPasswordScreen = new ForgotPasswordScreen();

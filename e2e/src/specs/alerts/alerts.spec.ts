@@ -15,7 +15,6 @@ import { expect } from '@wdio/globals';
 import { alertsScreen } from '../../pageObjects/AlertsScreen';
 import { authHelper } from '../../helpers/AuthHelper';
 import { bottomTabBar } from '../../pageObjects/BottomTabBar';
-import { moreScreen } from '../../pageObjects/MoreScreen';
 
 describe('Alerts Screen', () => {
   before(async () => {
@@ -27,10 +26,7 @@ describe('Alerts Screen', () => {
   });
 
   beforeEach(async () => {
-    // Navigate: More → Alerts (or via notification bell on Home)
-    await bottomTabBar.goToMore();
-    await moreScreen.waitForScreen();
-    await moreScreen.tapAlerts();
+    await bottomTabBar.goToAlerts();
     await alertsScreen.waitForScreen();
   });
 

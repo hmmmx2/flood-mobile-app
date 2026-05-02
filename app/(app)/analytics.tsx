@@ -196,7 +196,7 @@ function StatChip({
     ? 'trending-down-outline'
     : 'remove-outline';
   return (
-    <View style={chip.container}>
+    <View style={chip.container} testID="analytics-stat-chip">
       <Text style={chip.value}>{value}</Text>
       <Text style={chip.label}>{label}</Text>
       {change ? (
@@ -456,6 +456,7 @@ export default function AnalyticsScreen() {
         </View>
       ) : (
         <ScrollView
+          testID="analytics-view"
           contentContainerStyle={styles.scroll}
           showsVerticalScrollIndicator={false}
           refreshControl={

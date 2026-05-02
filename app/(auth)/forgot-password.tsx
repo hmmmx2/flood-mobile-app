@@ -190,7 +190,7 @@ export default function ForgotPasswordScreen() {
 
             {/* Error banner */}
             {!!error && (
-              <View style={styles.errorBanner}>
+              <View testID="forgot-error-banner" style={styles.errorBanner}>
                 <Ionicons name="alert-circle-outline" size={15} color="#DC2626" />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
@@ -202,6 +202,7 @@ export default function ForgotPasswordScreen() {
                 <View style={styles.field}>
                   <Text style={styles.label}>Email Address</Text>
                   <TextInput
+                    testID="forgot-email-input"
                     style={[styles.input, focused === 'email' && styles.inputFocused]}
                     value={email}
                     onChangeText={setEmail}
@@ -217,6 +218,7 @@ export default function ForgotPasswordScreen() {
                   />
                 </View>
                 <TouchableOpacity
+                  testID="send-code-button"
                   style={[styles.btn, (!email.trim() || loading) && styles.btnDisabled]}
                   onPress={handleRequestCode}
                   disabled={!email.trim() || loading}
@@ -246,6 +248,7 @@ export default function ForgotPasswordScreen() {
                   <Text style={styles.label}>Verification Code</Text>
                   <TextInput
                     ref={codeRef}
+                    testID="reset-code-input"
                     style={[styles.input, styles.codeInput, focused === 'code' && styles.inputFocused]}
                     value={code}
                     onChangeText={(t) => setCode(t.replace(/\D/g, '').slice(0, 8))}
@@ -260,6 +263,7 @@ export default function ForgotPasswordScreen() {
                   />
                 </View>
                 <TouchableOpacity
+                  testID="verify-code-button"
                   style={[styles.btn, (!code.trim() || loading) && styles.btnDisabled]}
                   onPress={handleVerifyCode}
                   disabled={!code.trim() || loading}
@@ -286,6 +290,7 @@ export default function ForgotPasswordScreen() {
                   <Text style={styles.label}>New Password</Text>
                   <View style={[styles.passwordWrap, focused === 'newpw' && styles.inputFocused]}>
                     <TextInput
+                      testID="new-password-input"
                       style={styles.passwordInput}
                       value={newPw}
                       onChangeText={setNewPw}
@@ -313,6 +318,7 @@ export default function ForgotPasswordScreen() {
                   <Text style={styles.label}>Confirm New Password</Text>
                   <TextInput
                     ref={confirmRef}
+                    testID="confirm-password-input"
                     style={[
                       styles.input,
                       focused === 'confirm' && styles.inputFocused,
@@ -343,6 +349,7 @@ export default function ForgotPasswordScreen() {
                 </View>
 
                 <TouchableOpacity
+                  testID="reset-password-button"
                   style={[
                     styles.btn,
                     (!newPw || !confirmPw || newPw !== confirmPw || loading) && styles.btnDisabled,

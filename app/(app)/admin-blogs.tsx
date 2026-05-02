@@ -29,7 +29,7 @@ const CATEGORIES = ['Flood Safety', 'Preparedness', 'Community', 'Updates', 'Tip
 
 function BlogCard({ item, onDelete }: { item: BlogDto; onDelete: (id: string) => void }) {
   return (
-    <View style={bc.card}>
+    <View style={bc.card} testID="admin-blog-card">
       <View style={bc.header}>
         <View style={bc.titleRow}>
           <Text style={bc.title} numberOfLines={2}>{item.title}</Text>
@@ -287,6 +287,7 @@ export default function AdminBlogsScreen() {
         <ActivityIndicator color={colors.primary} style={{ marginTop: 60 }} />
       ) : (
         <FlatList
+          testID="admin-blogs-list"
           data={blogs}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
@@ -315,7 +316,7 @@ export default function AdminBlogsScreen() {
         />
       )}
 
-      <TouchableOpacity style={s.fab} onPress={() => setComposeOpen(true)} activeOpacity={0.8}>
+      <TouchableOpacity style={s.fab} onPress={() => setComposeOpen(true)} activeOpacity={0.8} testID="create-blog-button">
         <Ionicons name="add" size={20} color="#fff" />
         <Text style={s.fabText}>New Article</Text>
       </TouchableOpacity>

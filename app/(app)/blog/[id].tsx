@@ -93,7 +93,7 @@ export default function BlogDetailScreen() {
     <SafeAreaView style={s.screen} edges={['top']}>
       {/* Header */}
       <View style={s.header}>
-        <TouchableOpacity onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
+        <TouchableOpacity testID="blog-detail-back" onPress={() => router.back()} style={s.backBtn} hitSlop={8}>
           <Ionicons name="arrow-back" size={24} color={TEXT} />
         </TouchableOpacity>
         <Text style={s.headerTitle}>Article</Text>
@@ -139,7 +139,7 @@ export default function BlogDetailScreen() {
               )}
             </View>
 
-            <Text style={s.title}>{blog.title}</Text>
+            <Text testID="blog-detail-title" style={s.title}>{blog.title}</Text>
             <Text style={s.date}>
               {new Date(blog.createdAt).toLocaleDateString('en-MY', {
                 day: 'numeric', month: 'long', year: 'numeric',

@@ -104,7 +104,7 @@ Typical build time: **8–15 minutes** for the first build, **4–8 minutes** wi
 ```bash
 eas secret:create --scope project \
   --name EXPO_PUBLIC_GOOGLE_MAPS_KEY \
-  --value "AIzaSyC-T8153PhEc3r8sJ08Gs_5zKhPhAfmGuI"
+  --value "YOUR_GOOGLE_MAPS_API_KEY"
 ```
 
 Once set, it is automatically injected into **every** build profile.
