@@ -339,18 +339,19 @@ function CustomerFeedScreen() {
   const likeMutation = useMutation({
     mutationFn: (postId: string) => postsApi.toggleLike(postId),
     onMutate: async (postId) => {
-      await qc.cancelQueries({ queryKey: ['posts', sort] });
-      const prev = qc.getQueryData<InfiniteData<PageDto<PostDto>>>(['posts', sort]);
-      qc.setQueryData<InfiniteData<PageDto<PostDto>>>(['posts', sort], (old) => {
+      const activeSort = sort;
+      await qc.cancelQueries({ queryKey: ['posts', activeSort] });
+      const prev = qc.getQueryData<InfiniteData<PageDto<PostDto>>>(['posts', activeSort]);
+      qc.setQueryData<InfiniteData<PageDto<PostDto>>>(['posts', activeSort], (old) => {
         if (!old) return old;
         return { ...old, pages: old.pages.map((page) => ({ ...page, content: page.content.map((p) =>
           p.id === postId ? { ...p, likedByMe: !p.likedByMe, likesCount: Math.max(0, p.likedByMe ? p.likesCount - 1 : p.likesCount + 1) } : p
         ) })) };
       });
-      return { prev };
+      return { prev, sort: activeSort };
     },
-    onError: (_err, _id, ctx) => { if (ctx?.prev) qc.setQueryData(['posts', sort], ctx.prev); Alert.alert('Error', 'Could not like post.'); },
-    onSettled: () => qc.invalidateQueries({ queryKey: ['posts', sort] }),
+    onError: (_err, _id, ctx) => { if (ctx?.prev) qc.setQueryData(['posts', ctx.sort], ctx.prev); Alert.alert('Error', 'Could not like post.'); },
+    onSettled: (_data, _error, _id, ctx) => qc.invalidateQueries({ queryKey: ['posts', ctx?.sort ?? sort] }),
   });
 
   const createMutation = useMutation({
@@ -366,7 +367,7 @@ function CustomerFeedScreen() {
     return unsubscribe;
   }, [navigation]);
 
-  const posts = data?.pages.flatMap((p) => p.content) ?? [];
+  const posts = data?.pages.flatMap((p) => p.content ?? []) ?? [];
   const handleLike = useCallback((id: string) => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     likeMutation.mutate(id);
@@ -402,7 +403,7 @@ function CustomerFeedScreen() {
         initialNumToRender={10}
         windowSize={5}
         ListHeaderComponent={
-          <>
+          <View>
             <TouchableOpacity style={feedStyles.createBar} onPress={() => user && setCreateVisible(true)} activeOpacity={0.85}>
               <View style={feedStyles.createAvatar}><Text style={feedStyles.createAvatarText}>{userInitials}</Text></View>
               <View style={feedStyles.createInputFake}>
@@ -439,7 +440,7 @@ function CustomerFeedScreen() {
                 <Text style={feedStyles.emptyDesc}>Be the first to share a flood update!</Text>
               </View>
             )}
-          </>
+          </View>
         }
         ListFooterComponent={isFetchingNextPage ? <ActivityIndicator color={BRAND} style={{ padding: 16 }} /> : null}
       />

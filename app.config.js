@@ -81,7 +81,6 @@ export default {
         "expo-notifications",
         {
           color: "#1d4ed8",
-          sounds: [],
         },
       ],
 

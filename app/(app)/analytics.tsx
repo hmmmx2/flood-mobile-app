@@ -10,6 +10,7 @@ import {
 import Svg, { Rect, Line, Path, Text as SvgText, G } from 'react-native-svg';
 import { useQuery } from '@tanstack/react-query';
 
+import { Ionicons } from '@expo/vector-icons';
 import ScreenHeader from '@/src/components/ui/ScreenHeader';
 import { analyticsApi, aiPredictionApi } from '@/src/api';
 import { colors, spacing, typography, radius, shadow } from '@/src/theme/admin';
@@ -189,14 +190,19 @@ function StatChip({
   const trendColor = trend === 'up' ? colors.status.critical
     : trend === 'down' ? colors.status.normal
     : colors.textMuted;
-  const trendIcon = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→';
+  const trendIconName = trend === 'up'
+    ? 'trending-up-outline'
+    : trend === 'down'
+    ? 'trending-down-outline'
+    : 'remove-outline';
   return (
     <View style={chip.container}>
       <Text style={chip.value}>{value}</Text>
       <Text style={chip.label}>{label}</Text>
       {change ? (
-        <View style={[chip.changePill, { backgroundColor: trendColor + '20' }]}>
-          <Text style={[chip.changeText, { color: trendColor }]}>{trendIcon} {change}</Text>
+        <View style={[chip.changePill, { backgroundColor: trendColor + '20', flexDirection: 'row', alignItems: 'center', gap: 3 }]}>
+          <Ionicons name={trendIconName} size={10} color={trendColor} />
+          <Text style={[chip.changeText, { color: trendColor }]}>{change}</Text>
         </View>
       ) : null}
     </View>

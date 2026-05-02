@@ -47,7 +47,16 @@ export async function tryRegisterPushToken(): Promise<void> {
       (Constants.expoConfig?.extra?.eas?.projectId as string | undefined) ?? '';
     if (!projectId) return;
 
-    const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
+    let token: string;
+    try {
+      const result = await Notifications.getExpoPushTokenAsync({ projectId });
+      token = result.data;
+    } catch {
+      if (__DEV__) {
+        console.info('[push] Push token unavailable — Firebase not configured in this build. Add google-services.json to enable push in dev-cloud builds.');
+      }
+      return;
+    }
     await pushApi.registerToken({
       token,
       platform: Platform.OS as 'android' | 'ios',

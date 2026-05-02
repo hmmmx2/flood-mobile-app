@@ -62,9 +62,12 @@ function ReportCard({
           onPress={() => Linking.openURL(`https://maps.google.com/?q=${item.latitude},${item.longitude}`)}
           activeOpacity={0.7}
         >
-          <Text style={[rc.location, rc.locationLink]}>
-            {item.latitude.toFixed(4)}°, {item.longitude.toFixed(4)}°  📍
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <Ionicons name="location-outline" size={13} color={colors.primary} />
+            <Text style={[rc.location, rc.locationLink]}>
+              {item.latitude.toFixed(4)}°, {item.longitude.toFixed(4)}°
+            </Text>
+          </View>
         </TouchableOpacity>
           <Text style={rc.time}>{relativeTime(item.submittedAt)}</Text>
         </View>
