@@ -30,7 +30,8 @@
         "EXPO_PUBLIC_API_BASE_URL": "https://flood-service-community-production.up.railway.app",
         "EXPO_PUBLIC_AUTH_API_URL": "https://flood-service-community-production.up.railway.app",
         "EXPO_PUBLIC_CRM_API_URL":  "https://flood-service-crm-production.up.railway.app",
-        "EXPO_PUBLIC_AI_API_URL":   "https://flood-ai-prediction-production.up.railway.app"
+        "EXPO_PUBLIC_AI_API_URL":   "https://flood-ai-prediction-production.up.railway.app",
+        "EXPO_PUBLIC_GOOGLE_MAPS_KEY": "env"
       }
     },
 

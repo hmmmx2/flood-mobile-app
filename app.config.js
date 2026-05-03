@@ -2,7 +2,7 @@ export default {
   expo: {
     name: "FloodWatch",
     slug: "flood-mobile-community",
-    owner: "alwin523",
+    owner: "justin_pane",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
@@ -100,7 +100,7 @@ export default {
     },
     extra: {
       eas: {
-        projectId: "c7ac1981-c882-4125-99ec-c6c6fabc5c8b",
+        projectId: "bab714e1-7aaf-4094-b1d8-7e168ef572dd",
       },
     },
   },

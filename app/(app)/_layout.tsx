@@ -17,6 +17,7 @@ import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import NetInfo from '@react-native-community/netinfo';
 import { useQuery } from '@tanstack/react-query';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { tokenStore } from '@/src/api/client';
 import { useAuthStore } from '@/src/store/authStore';
 import { tryRegisterPushToken } from '@/src/utils/push';
@@ -32,6 +33,7 @@ export default function AppLayout() {
   const isAdmin  = user?.role === 'admin';
   const isLoading = useAuthStore((s) => s.isLoading);
   const [isOffline, setIsOffline] = useState(false);
+  const insets = useSafeAreaInsets();
 
   // Guard: redirect to login if tokens disappear (logout or server invalidation)
   useEffect(() => {
@@ -89,6 +91,12 @@ export default function AppLayout() {
   const tabBarBg     = isAdmin ? '#0d1f3d'    : '#FFFFFF';
   const tabBarBorder = isAdmin ? '#1e3a5f'    : '#DDE3ED';
 
+  // ── Dynamic tab bar height with safe area support ───────────────────────────── 
+  const baseHeight = Platform.OS === 'ios' ? 82 : 62;
+  const basePaddingBottom = Platform.OS === 'ios' ? 22 : 8;
+  const paddingBottom = Math.max(basePaddingBottom, insets.bottom);
+  const height = baseHeight + (paddingBottom - basePaddingBottom);
+
   return (
     <View style={{ flex: 1 }}>
       {isOffline && (
@@ -107,8 +115,8 @@ export default function AppLayout() {
           backgroundColor: tabBarBg,
           borderTopWidth: 1,
           borderTopColor: tabBarBorder,
-          height: Platform.OS === 'ios' ? 82 : 62,
-          paddingBottom: Platform.OS === 'ios' ? 22 : 8,
+          height,
+          paddingBottom,
           paddingTop: 8,
           elevation: 8,
           shadowColor: '#000',
