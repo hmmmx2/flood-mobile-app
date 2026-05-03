@@ -115,7 +115,7 @@ function attachRefreshInterceptor(instance: AxiosInstance): void {
           refreshPromise = axios
             .post<RefreshResponseDto>(`${AUTH_BASE_URL}/auth/refresh`, {
               refreshToken: tokens.refreshToken,
-            })
+            }, { timeout: 20_000 })
             .then(async (res) => {
               const newTokens: TokenSet = {
                 accessToken: res.data.accessToken,

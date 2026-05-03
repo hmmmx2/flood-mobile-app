@@ -20,6 +20,7 @@ import {
 } from '@tanstack/react-query';
 import { postsApi, groupsApi, dashboardApi, analyticsApi } from '@/src/api';
 import { useAuthStore } from '@/src/store/authStore';
+import { showToast } from '@/src/components/Toast';
 import type { PostDto, PageDto, DashboardNodeRowDto, FloodLevel } from '@/src/api/types';
 
 // ── Admin UI components (dark theme) ─────────────────────────────────────────
@@ -153,7 +154,9 @@ function AdminDashboardScreen() {
   const { data: nodes, isLoading, isError: nodesError, refetch, isRefetching, dataUpdatedAt } = useQuery({
     queryKey: ['dashboard-nodes'],
     queryFn: dashboardApi.getNodes,
-    refetchInterval: isActive ? 1_000 : false,
+    refetchInterval: isActive ? 30_000 : false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
 
   React.useEffect(() => {
@@ -235,7 +238,7 @@ function AdminDashboardScreen() {
         </View>
 
         <Text style={{ ...aty.caption, textAlign: 'center', marginTop: asp.xl, marginBottom: asp.sm }}>
-          Auto-refreshes every 1s · Last fetch: {lastFetchTime ?? '—'}
+          Auto-refreshes every 30s · Last fetch: {lastFetchTime ?? '—'}
         </Text>
       </ScrollView>
     </View>
@@ -257,7 +260,7 @@ interface PostCardProps {
   onPress: () => void;
 }
 
-const PostCard = React.memo(function PostCard({ post, onLike, onPress }: PostCardProps) {
+const PostCard = React.memo(function PostCard({ post, onLike, onPress, liking }: PostCardProps & { liking?: boolean }) {
   const stopProp = (e: GestureResponderEvent) => e.stopPropagation();
 
   const handleShare = async (e: GestureResponderEvent) => {
@@ -299,9 +302,9 @@ const PostCard = React.memo(function PostCard({ post, onLike, onPress }: PostCar
         {!!post.content && <Text style={feedStyles.cardContent} numberOfLines={3}>{post.content}</Text>}
       </Pressable>
       <View style={feedStyles.cardActions}>
-        <TouchableOpacity style={feedStyles.actionBtn} onPress={(e) => { stopProp(e); onLike(post.id); }} activeOpacity={0.7}>
-          <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={15} color={post.likedByMe ? BRAND : MUTED} />
-          <Text style={[feedStyles.actionText, post.likedByMe && { color: BRAND }]}>{Math.max(0, post.likesCount)}</Text>
+        <TouchableOpacity style={feedStyles.actionBtn} onPress={(e) => { stopProp(e); onLike(post.id); }} activeOpacity={0.7} disabled={liking}>
+          <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={15} color={liking ? MUTED : post.likedByMe ? BRAND : MUTED} />
+          <Text style={[feedStyles.actionText, post.likedByMe && !liking && { color: BRAND }]}>{Math.max(0, post.likesCount)}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={feedStyles.actionBtn} onPress={(e) => { stopProp(e); router.push(`/(app)/post/${post.id}` as any); }} activeOpacity={0.7}>
           <Ionicons name="chatbubble-outline" size={15} color={MUTED} />
@@ -357,8 +360,17 @@ function CustomerFeedScreen() {
 
   const createMutation = useMutation({
     mutationFn: () => postsApi.create({ title: postTitle.trim(), content: postContent.trim(), ...(selectedGroup ? { groupSlug: selectedGroup } : {}) }),
-    onSuccess: () => { setCreateVisible(false); setPostTitle(''); setPostContent(''); setSelectedGroup(undefined); qc.invalidateQueries({ queryKey: ['posts'] }); },
-    onError: () => Alert.alert('Error', 'Could not create post. Please try again.'),
+    onSuccess: () => {
+      setCreateVisible(false);
+      setPostTitle('');
+      setPostContent('');
+      setSelectedGroup(undefined);
+      qc.invalidateQueries({ queryKey: ['posts'] });
+      showToast({ message: 'Post shared successfully', type: 'success' });
+    },
+    onError: () => {
+      showToast({ message: 'Could not create post. Please try again.', type: 'error' });
+    },
   });
 
   useEffect(() => {
@@ -396,7 +408,7 @@ function CustomerFeedScreen() {
         ref={listRef}
         data={posts}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PostCard post={item} onLike={handleLike} onPress={() => router.push(`/(app)/post/${item.id}` as any)} />}
+        renderItem={({ item }) => <PostCard post={item} onLike={handleLike} liking={likeMutation.isPending && likeMutation.variables === item.id} onPress={() => router.push(`/(app)/post/${item.id}` as any)} />}
         contentContainerStyle={feedStyles.listContent}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={BRAND} colors={[BRAND]} />}

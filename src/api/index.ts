@@ -309,32 +309,34 @@ export const adminBlogsApi = {
 const AI_BASE_URL =
   process.env.EXPO_PUBLIC_AI_API_URL ?? 'http://localhost:8000';
 
+async function aiFetch(url: string, init?: RequestInit) {
+  const res = await fetch(url, { ...init, signal: AbortSignal.timeout(35_000) });
+  if (!res.ok) throw new Error(`AI service returned ${res.status}`);
+  return res.json();
+}
+
 export const aiPredictionApi = {
   getMonthly: (year = new Date().getFullYear()) =>
-    fetch(`${AI_BASE_URL}/api/v1/predict/monthly?year=${year}`)
-      .then((r) => r.json()),
+    aiFetch(`${AI_BASE_URL}/api/v1/predict/monthly?year=${year}`),
 
   getDaily: (year = new Date().getFullYear()) =>
-    fetch(`${AI_BASE_URL}/api/v1/predict/daily?year=${year}`)
-      .then((r) => r.json()),
+    aiFetch(`${AI_BASE_URL}/api/v1/predict/daily?year=${year}`),
 
   getWeekly: (year = new Date().getFullYear()) =>
-    fetch(`${AI_BASE_URL}/api/v1/predict/weekly?year=${year}`)
-      .then((r) => r.json()),
+    aiFetch(`${AI_BASE_URL}/api/v1/predict/weekly?year=${year}`),
 
   getHourly: (date: string) =>
-    fetch(`${AI_BASE_URL}/api/v1/predict/hourly?date=${date}`)
-      .then((r) => r.json()),
+    aiFetch(`${AI_BASE_URL}/api/v1/predict/hourly?date=${date}`),
 
   predictNode: (nodeId: string, waterLevel: number, rainToday = 10) =>
-    fetch(`${AI_BASE_URL}/api/v1/predict/node`, {
+    aiFetch(`${AI_BASE_URL}/api/v1/predict/node`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ node_id: nodeId, water_level: waterLevel, rain_1day: rainToday }),
-    }).then((r) => r.json()),
+    }),
 
   isOnline: () =>
-    fetch(`${AI_BASE_URL}/health`, { signal: AbortSignal.timeout(3000) })
+    fetch(`${AI_BASE_URL}/health`, { signal: AbortSignal.timeout(5000) })
       .then((r) => r.ok)
       .catch(() => false),
 };

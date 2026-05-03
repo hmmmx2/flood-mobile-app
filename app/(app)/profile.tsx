@@ -18,6 +18,7 @@ import * as Device from 'expo-device';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { settingsApi, profileApi, pushApi } from '@/src/api';
 import { useAuthStore } from '@/src/store/authStore';
+import { showToast } from '@/src/components/Toast';
 import type { UpdateSettingDto } from '@/src/api/types';
 import { client } from '@/src/api/client';
 
@@ -203,6 +204,7 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
         avatarUrl:     avatarUrl.trim() || undefined,
       }),
     onSuccess: (updatedUser) => {
+      showToast({ message: 'Profile updated successfully', type: 'success' });
       if (user) {
         setUser({
           ...user,
@@ -215,10 +217,17 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
       }
       onClose();
     },
-    onError: () => Alert.alert('Error', 'Could not update profile. Please try again.'),
+    onError: () => showToast({ message: 'Could not update profile. Please try again.', type: 'error' }),
   });
 
-  const canSubmit = firstName.trim().length > 0 && lastName.trim().length > 0 && !updateMutation.isPending;
+  const isValidAvatarUrl = (url: string) =>
+    !url.trim() || /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url.trim());
+
+  const avatarUrlError = avatarUrl.trim() && !isValidAvatarUrl(avatarUrl)
+    ? 'Must be a valid image URL (jpg, png, gif, webp, svg)'
+    : null;
+
+  const canSubmit = firstName.trim().length > 0 && lastName.trim().length > 0 && !avatarUrlError && !updateMutation.isPending;
 
   const fields: Array<{ label: string; placeholder: string; value: string; set: (v: string) => void; optional?: boolean; keyboard?: any; capitalize?: any; testID?: string }> = [
     { label: 'First Name',  placeholder: 'First name',          value: firstName, set: setFirstName, capitalize: 'words', testID: 'edit-first-name-input' },
@@ -272,7 +281,7 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
         <View style={{ marginBottom: 14 }}>
           <Text style={epStyles.label}>Profile Photo URL <Text style={epStyles.optional}>(optional)</Text></Text>
           <TextInput
-            style={epStyles.input}
+            style={[epStyles.input, avatarUrlError ? { borderColor: '#ef4444' } : undefined]}
             value={avatarUrl}
             onChangeText={setAvatarUrl}
             placeholder="https://example.com/photo.jpg"
@@ -281,6 +290,9 @@ function EditProfileModal({ visible, onClose }: { visible: boolean; onClose: () 
             autoCapitalize="none"
             returnKeyType="done"
           />
+          {avatarUrlError ? (
+            <Text style={{ fontSize: 12, color: '#ef4444', marginTop: 4 }}>{avatarUrlError}</Text>
+          ) : null}
         </View>
         <TouchableOpacity
           testID="edit-save-button"
@@ -342,8 +354,11 @@ export default function ProfileScreen() {
 
   const updateSetting = useMutation({
     mutationFn: (payload: UpdateSettingDto) => settingsApi.update(payload),
-    onSuccess:  () => qc.invalidateQueries({ queryKey: ['settings'] }),
-    onError:    () => Alert.alert('Error', 'Could not update setting. Please try again.'),
+    onSuccess:  () => {
+      qc.invalidateQueries({ queryKey: ['settings'] });
+      showToast({ message: 'Notification preference saved', type: 'success' });
+    },
+    onError: () => showToast({ message: 'Could not update setting. Please try again.', type: 'error' }),
   });
 
   const registerPushToken = useCallback(async () => {

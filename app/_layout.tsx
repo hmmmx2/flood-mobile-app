@@ -6,6 +6,9 @@ import * as Notifications from 'expo-notifications';
 import { tokenStore, registerAuthFailureHandler } from '@/src/api/client';
 import { useAuthStore } from '@/src/store/authStore';
 import { ErrorBoundary } from '@/src/components/ErrorBoundary';
+import FloodAlertBanner from '@/src/components/FloodAlertBanner';
+import { triggerFloodAlarm, type FloodAlertPayload } from '@/src/services/floodAlarm';
+import { ToastProvider } from '@/src/components/Toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +33,7 @@ Notifications.setNotificationHandler({
 function RootLayoutNav() {
   const { setUser } = useAuthStore();
   const [isOnline, setIsOnline] = useState(true);
+  const [activeFloodAlert, setActiveFloodAlert] = useState<FloodAlertPayload | null>(null);
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -64,8 +68,9 @@ function RootLayoutNav() {
       router.replace('/(auth)/login');
     });
 
-    // Android requires a notification channel for alerts to appear on API 26+
+    // Android notification channels
     if (Platform.OS === 'android') {
+      // General alerts channel
       void Notifications.setNotificationChannelAsync('floodwatch-alerts', {
         name: 'FloodWatch Alerts',
         importance: Notifications.AndroidImportance.HIGH,
@@ -73,14 +78,42 @@ function RootLayoutNav() {
         lightColor: '#1d4ed8',
         sound: 'default',
       });
+      // Flood emergency channel — bypasses Do Not Disturb
+      void Notifications.setNotificationChannelAsync('flood_emergency', {
+        name: 'Flood Emergency Alerts',
+        description: 'Critical flood threshold alerts — bypasses Do Not Disturb',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 300, 200, 300, 200, 600],
+        lightColor: '#ef4444',
+        sound: 'flood_alarm.wav',
+        bypassDnd: true,
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+        showBadge: true,
+      });
     }
+  }, []);
+
+  // Flood alert: foreground listener — shows FloodAlertBanner when app is open
+  useEffect(() => {
+    const foregroundSub = Notifications.addNotificationReceivedListener((notification) => {
+      const data = notification.request.content.data as Record<string, unknown> | undefined;
+      if (data?.type === 'flood_alert') {
+        const payload = data as unknown as FloodAlertPayload;
+        setActiveFloodAlert(payload);
+        void triggerFloodAlarm(payload);
+      }
+    });
+    return () => foregroundSub.remove();
   }, []);
 
   // MOB-005: handle push notification taps to navigate to the relevant screen
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
       const data = response.notification.request.content.data as Record<string, unknown> | undefined;
-      if (data?.type === 'post' && data?.postId) {
+      if (data?.type === 'flood_alert') {
+        // Tapping a flood alert from the notification shade → open alerts screen
+        router.push('/(app)/alerts');
+      } else if (data?.type === 'post' && data?.postId) {
         router.push(`/(app)/post/${data.postId as string}`);
       } else if (data?.type === 'alert') {
         router.push('/(app)/alerts');
@@ -106,6 +139,13 @@ function RootLayoutNav() {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(app)"  options={{ headerShown: false }} />
       </Stack>
+      {/* Japan-EEW-style flood alarm overlay — renders above all screens */}
+      <FloodAlertBanner
+        alert={activeFloodAlert}
+        onDismiss={() => setActiveFloodAlert(null)}
+      />
+      {/* Global toast notifications — success/error/info feedback */}
+      <ToastProvider />
     </>
   );
 }

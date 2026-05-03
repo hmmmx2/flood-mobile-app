@@ -262,12 +262,14 @@ function AiRiskCard({
   dailyData,
   isLoading,
   isOffline,
+  onRetry,
 }: {
   monthlyData: RiskPoint[];
   weeklyData: RiskPoint[];
   dailyData: RiskPoint[];
   isLoading: boolean;
   isOffline: boolean;
+  onRetry?: () => void;
 }) {
   const [scale, setScale] = useState<RiskScale>('monthly');
   const scales: RiskScale[] = ['monthly', 'weekly', 'daily'];
@@ -319,8 +321,13 @@ function AiRiskCard({
       ) : isOffline ? (
         <View style={aiCard.offlineMsg}>
           <Text style={aiCard.offlineMsgText}>
-            AI service offline. Start flood-ai-prediction service.
+            AI prediction service is temporarily unavailable. It may be starting up — please try again in 30 seconds.
           </Text>
+          {onRetry && (
+            <TouchableOpacity style={aiCard.retryBtn} onPress={onRetry} activeOpacity={0.8}>
+              <Text style={aiCard.retryBtnText}>Retry</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ) : (
         <RiskBarChart data={chartData} height={160} />
@@ -363,8 +370,10 @@ const aiCard = StyleSheet.create({
   scaleBtnActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   scaleBtnText: { fontSize: 11, fontWeight: '600', color: colors.textMuted },
   scaleBtnTextActive: { color: '#fff' },
-  offlineMsg: { alignItems: 'center', paddingVertical: 30 },
+  offlineMsg: { alignItems: 'center', paddingVertical: 30, gap: 12 },
   offlineMsgText: { ...typography.caption, textAlign: 'center', maxWidth: 240 },
+  retryBtn: { backgroundColor: colors.primary, borderRadius: 20, paddingHorizontal: 24, paddingVertical: 8 },
+  retryBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: spacing.sm },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   legendDot: { width: 8, height: 8, borderRadius: 4 },
@@ -382,11 +391,12 @@ export default function AnalyticsScreen() {
     staleTime: 60_000,
   });
 
-  const { data: aiMonthly, isLoading: aiLoading } = useQuery({
+  const { data: aiMonthly, isLoading: aiLoading, isError: aiError, refetch: aiRefetch } = useQuery({
     queryKey: ['ai-predict-monthly', year],
     queryFn: () => aiPredictionApi.getMonthly(year),
     staleTime: 5 * 60_000,
     retry: 1,
+    retryDelay: 3000,
   });
 
   const { data: aiWeekly } = useQuery({
@@ -394,6 +404,7 @@ export default function AnalyticsScreen() {
     queryFn: () => aiPredictionApi.getWeekly(year),
     staleTime: 5 * 60_000,
     retry: 1,
+    retryDelay: 3000,
   });
 
   const { data: aiDaily } = useQuery({
@@ -401,9 +412,10 @@ export default function AnalyticsScreen() {
     queryFn: () => aiPredictionApi.getDaily(year),
     staleTime: 5 * 60_000,
     retry: 1,
+    retryDelay: 3000,
   });
 
-  const aiOffline = !aiLoading && !aiMonthly?.data;
+  const aiOffline = !aiLoading && (aiError || !aiMonthly?.data);
 
   const monthlyRiskData: RiskPoint[] = (aiMonthly?.data ?? []).map(
     (d: { month: string; level: number }) => ({ label: d.month.slice(0, 3), level: d.level })
@@ -477,7 +489,8 @@ export default function AnalyticsScreen() {
             weeklyData={weeklyRiskData}
             dailyData={dailyRiskData}
             isLoading={aiLoading}
-            isOffline={aiOffline}
+            isOffline={!!aiOffline}
+            onRetry={() => void aiRefetch()}
           />
 
           {(data?.chartData?.length ?? 0) > 0 && (

@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import ScreenHeader from '@/src/components/ui/ScreenHeader';
 import StatusBadge from '@/src/components/ui/StatusBadge';
 import EmptyState from '@/src/components/ui/EmptyState';
+import { showToast } from '@/src/components/Toast';
 import { broadcastsApi, zonesApi } from '@/src/api';
 import { colors, spacing, typography, radius, shadow } from '@/src/theme/admin';
 import type { BroadcastDto, CreateBroadcastDto, FloodZoneDto } from '@/src/api/types';
@@ -395,10 +396,10 @@ export default function BroadcastsScreen() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['broadcasts'] });
       setComposeOpen(false);
-      Alert.alert('Broadcast sent', 'The emergency broadcast has been delivered successfully.');
+      showToast({ message: 'Emergency broadcast sent successfully', type: 'success' });
     },
     onError: () => {
-      Alert.alert('Failed to send', 'Something went wrong. Please try again.');
+      showToast({ message: 'Failed to send broadcast. Please try again.', type: 'error' });
     },
   });
 

@@ -51,9 +51,9 @@ export async function tryRegisterPushToken(): Promise<void> {
     try {
       const result = await Notifications.getExpoPushTokenAsync({ projectId });
       token = result.data;
-    } catch {
+    } catch (err) {
       if (__DEV__) {
-        console.info('[push] Push token unavailable — Firebase not configured in this build. Add google-services.json to enable push in dev-cloud builds.');
+        console.warn('[push] Push token unavailable — Firebase may not be configured in this build. Add google-services.json (Android) or GoogleService-Info.plist (iOS) to enable push notifications. Error:', err);
       }
       return;
     }
@@ -62,6 +62,8 @@ export async function tryRegisterPushToken(): Promise<void> {
       platform: Platform.OS as 'android' | 'ios',
     });
   } catch (error) {
-    console.error('Push registration failed:', error);
+    if (__DEV__) {
+      console.warn('[push] Push registration failed:', error);
+    }
   }
 }
