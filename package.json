@@ -69,6 +69,9 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "testPathIgnorePatterns": [
+      "<rootDir>/e2e/"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/$1",
       "^@api/(.*)$": "<rootDir>/src/api/$1",
