@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ReportsScreen POM
  *
  * Corresponding app screen: app/(app)/reports.tsx
@@ -21,7 +21,7 @@ export class ReportsScreen extends BasePage {
     return this.el('reports-list');
   }
 
-  get reportCards(): ChainablePromiseArray {
+  get reportCards() {
     return $$('~report-card');
   }
 

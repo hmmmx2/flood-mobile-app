@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UsersScreen POM
  *
  * Corresponding app screen: app/(app)/users.tsx
@@ -17,7 +17,7 @@ export class UsersScreen extends BasePage {
     return this.el('users-list');
   }
 
-  get userCards(): ChainablePromiseArray {
+  get userCards() {
     return $$('~user-card');
   }
 

@@ -9,12 +9,15 @@ dotenv.config({ path: path.resolve(__dirname, '.env.test') });
  * Resolve APK path: prefer env override, then default build output.
  * Set APK_PATH in .env.test to use a custom path.
  */
-const APK_PATH =
-  process.env.APK_PATH ??
-  path.resolve(
-    __dirname,
-    '../android/app/build/outputs/apk/release/app-release.apk',
-  );
+const _apkEnv = process.env.APK_PATH;
+const APK_PATH = _apkEnv
+  ? path.isAbsolute(_apkEnv)
+    ? _apkEnv
+    : path.resolve(__dirname, _apkEnv)
+  : path.resolve(
+      __dirname,
+      '../android/app/build/outputs/apk/debug/app-debug.apk',
+    );
 
 export const config: Options.Testrunner = {
   // ── Runner ──────────────────────────────────────────────────────────────────
@@ -52,6 +55,8 @@ export const config: Options.Testrunner = {
       'appium:disableWindowAnimation': true,
       'appium:ignoreUnimportantViews': true,
       'appium:uiautomator2ServerInstallTimeout': 60000,
+      'appium:appWaitDuration': 60000,
+      'appium:appWaitActivity': 'com.floodcommunity.app.MainActivity',
     },
   ],
 

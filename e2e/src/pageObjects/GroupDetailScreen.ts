@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GroupDetailScreen POM
  *
  * Corresponding app screen: app/(app)/g/[slug].tsx
@@ -29,7 +29,7 @@ export class GroupDetailScreen extends BasePage {
     return this.el('group-posts-list');
   }
 
-  get postCards(): ChainablePromiseArray {
+  get postCards() {
     return $$('~group-post-card');
   }
 

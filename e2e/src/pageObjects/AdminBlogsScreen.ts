@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AdminBlogsScreen POM
  *
  * Corresponding app screen: app/(app)/admin-blogs.tsx
@@ -15,7 +15,7 @@ export class AdminBlogsScreen extends BasePage {
     return this.el('admin-blogs-list');
   }
 
-  get blogCards(): ChainablePromiseArray {
+  get blogCards() {
     return $$('~admin-blog-card');
   }
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CommunityScreen POM
  *
  * Corresponding app screen: app/(app)/community.tsx
@@ -19,7 +19,7 @@ export class CommunityScreen extends BasePage {
     return this.el('community-list');
   }
 
-  get groupCards(): ChainablePromiseArray {
+  get groupCards() {
     return $$('~group-card');
   }
 

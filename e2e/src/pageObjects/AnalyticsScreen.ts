@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AnalyticsScreen POM
  *
  * Corresponding app screen: app/(app)/analytics.tsx
@@ -14,7 +14,7 @@ export class AnalyticsScreen extends BasePage {
     return this.el('analytics-view');
   }
 
-  get statChips(): ChainablePromiseArray {
+  get statChips() {
     return $$('~analytics-stat-chip');
   }
 

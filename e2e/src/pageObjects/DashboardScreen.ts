@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DashboardScreen POM
  *
  * Corresponding app screen: app/(app)/index.tsx (admin branch → AdminDashboardScreen)
@@ -14,7 +14,7 @@ export class DashboardScreen extends BasePage {
     return this.el('dashboard-view');
   }
 
-  get statChips(): ChainablePromiseArray {
+  get statChips() {
     return $$('~analytics-stat-chip');
   }
 

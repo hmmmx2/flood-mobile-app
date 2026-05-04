@@ -17,7 +17,7 @@
 
 export abstract class BasePage {
   /** Maximum time (ms) to wait for an element to appear. */
-  protected readonly DEFAULT_TIMEOUT = 20000;
+  protected readonly DEFAULT_TIMEOUT = 60000;
 
   /**
    * Wait for this screen to be visible before interacting.

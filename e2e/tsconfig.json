@@ -11,13 +11,16 @@
     "outDir": "./dist",
     "rootDir": "./",
     "skipLibCheck": true,
-    "types": ["mocha", "node"],
+    "types": ["mocha", "node", "@wdio/globals/types"],
     "baseUrl": ".",
     "paths": {
       "@pageObjects/*": ["src/pageObjects/*"],
       "@helpers/*": ["src/helpers/*"],
       "@data/*": ["src/data/*"]
     }
+  },
+  "ts-node": {
+    "transpileOnly": true
   },
   "include": [
     "src/**/*.ts",

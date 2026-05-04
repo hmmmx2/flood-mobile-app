@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MapScreen POM
  *
  * Corresponding app screen: app/(app)/map.tsx
@@ -32,7 +32,7 @@ export class MapScreen extends BasePage {
     return this.el('map-loading');
   }
 
-  get sensorMarkers(): ChainablePromiseArray {
+  get sensorMarkers() {
     return $$('~sensor-marker');
   }
 

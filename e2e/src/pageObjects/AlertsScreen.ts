@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AlertsScreen POM
  *
  * Corresponding app screen: app/(app)/alerts.tsx
@@ -22,7 +22,7 @@ export class AlertsScreen extends BasePage {
     return this.el('alerts-list');
   }
 
-  get alertCards(): ChainablePromiseArray {
+  get alertCards() {
     return $$('~alert-card');
   }
 

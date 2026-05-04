@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BlogScreen POM
  *
  * Corresponding app screen: app/(app)/blog.tsx
@@ -17,7 +17,7 @@ export class BlogScreen extends BasePage {
     return this.el('blog-list');
   }
 
-  get blogCards(): ChainablePromiseArray {
+  get blogCards() {
     return $$('~blog-card');
   }
 

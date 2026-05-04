@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HomeScreen POM — Customer feed view (app/(app)/index.tsx → CustomerFeedScreen)
  *
  * Required testIDs:
@@ -27,7 +27,7 @@ export class HomeScreen extends BasePage {
   }
 
   /** All post cards currently rendered. */
-  get postCards(): ChainablePromiseArray {
+  get postCards() {
     return $$('~post-card');
   }
 

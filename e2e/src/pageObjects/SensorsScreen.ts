@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SensorsScreen POM
  *
  * Corresponding app screen: app/(app)/sensors.tsx
@@ -21,7 +21,7 @@ export class SensorsScreen extends BasePage {
     return this.el('sensors-list');
   }
 
-  get sensorCards(): ChainablePromiseArray {
+  get sensorCards() {
     return $$('~sensor-card');
   }
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PostDetailScreen POM
  *
  * Corresponding app screen: app/(app)/post/[id].tsx
@@ -45,7 +45,7 @@ export class PostDetailScreen extends BasePage {
     return this.el('post-comment-submit');
   }
 
-  get commentItems(): ChainablePromiseArray {
+  get commentItems() {
     return $$('~comment-item');
   }
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BroadcastsScreen POM
  *
  * Corresponding app screen: app/(app)/broadcasts.tsx
@@ -19,7 +19,7 @@ export class BroadcastsScreen extends BasePage {
     return this.el('broadcasts-list');
   }
 
-  get broadcastCards(): ChainablePromiseArray {
+  get broadcastCards() {
     return $$('~broadcast-card');
   }
 

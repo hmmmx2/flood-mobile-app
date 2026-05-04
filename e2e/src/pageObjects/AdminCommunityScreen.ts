@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AdminCommunityScreen POM
  *
  * Corresponding app screen: app/(app)/admin-community.tsx
@@ -15,7 +15,7 @@ export class AdminCommunityScreen extends BasePage {
     return this.el('admin-community-list');
   }
 
-  get postCards(): ChainablePromiseArray {
+  get postCards() {
     return $$('~admin-community-post-card');
   }
 
