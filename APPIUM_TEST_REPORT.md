@@ -1,9 +1,9 @@
 # FloodWatch Mobile — Appium E2E Test Report
 
-**Date:** 2026-05-04  
+**Last run:** 2026-05-04 03:08 → 04:57 (1h 48m)  
 **Tester:** Claude Code (automated)  
-**Device:** Android Emulator — Medium Phone API 36 (`emulator-5554`)  
-**Build:** Debug APK (`app-debug.apk`) — see APK issue below  
+**Device:** Android Emulator — Medium Phone API 36 (`emulator-5554`, Android 16)  
+**Build:** `app-debug.apk` — 243 MB, ABIs: arm64-v8a / armeabi-v7a / x86 / x86_64  
 **Framework:** WebdriverIO 8 + Appium 2 + UiAutomator2  
 
 ---
@@ -61,20 +61,43 @@ Even though `wdio.conf.ts` sets `autoCompileOpts.tsNodeOpts.transpileOnly: true`
 
 ---
 
-### BLOCKER-4 — APK is an Expo dev-client build (requires Metro server) 🔧 IN PROGRESS
+### BLOCKER-4 — `com.floodcommunity.app.MainActivity` never starts ❌ CONFIRMED (run 2026-05-04)
 
-**Symptom:**
-The emulator shows the Expo Dev Launcher screen ("Development Servers — Start a local development server with: `npx expo start`") instead of the login screen. Appium cannot find any test elements because the real app UI never loads.
+**Symptom (from latest run):**
+```
+Cannot start the 'com.floodcommunity.app' application.
+Original error: 'com.floodcommunity.app.MainActivity' never started.
+```
+All 3 Appium retries × 17 spec workers failed with this identical error. The emulator died after ~1.5 hours of repeated reinstalls (worker [0-16] got "Could not find a connected Android device").
 
-**Root cause:** The APK built in the previous session via `./gradlew assembleDebug` is an **Expo Development Client** (expo-dev-client). It does NOT bundle JavaScript — instead it expects to connect to a running Metro/Expo dev server at runtime. Without Metro, it shows the dev server selector screen.
+**APK verified OK** — `aapt dump badging` confirms:
+- Package: `com.floodcommunity.app` ✓
+- Launchable activity: `com.floodcommunity.app.MainActivity` ✓
+- Native ABIs: arm64-v8a, armeabi-v7a, x86, x86_64 ✓
 
-**Fix in progress:**
-1. Created `android/app/src/main/assets/` directory
-2. Running `npx expo export:embed --platform android --dev false` to bundle JS
-3. Will rebuild APK with `./gradlew assembleDebug --no-daemon` (native layer already compiled; should be ~5 min)
-4. The resulting APK will be self-contained — no dev server needed
+**Root cause (most likely):** The `app-debug.apk` is an **Expo Development Client** build. When launched, `MainActivity` immediately hands control to `expo.modules.devlauncher.DevLauncherActivity` (the server selector UI). Appium waits for `com.floodcommunity.app.MainActivity` to become the stable foreground activity, but it transitions away before Appium records it as "started" — so the wait times out after `appWaitDuration: 60000ms`.
 
-**For CI/CD:** Use `eas build --profile preview` which always produces a standalone APK with JS bundled. Avoid bare `./gradlew assembleDebug` for test builds unless the JS bundle is pre-created.
+**Fix — use a standalone "preview" APK:**
+
+Option A (preferred — EAS cloud, no local Android SDK needed):
+```bash
+cd flood-mobile-app
+npx eas build --platform android --profile preview
+# Download the resulting .apk from https://expo.dev/accounts/alwin523/projects/flood-mobile-app/builds
+# Set APK_PATH=/path/to/downloaded.apk in e2e/.env.test
+```
+
+Option B (local build, embeds JS bundle):
+```bash
+cd flood-mobile-app
+npx expo export:embed --platform android --dev false   # creates android/app/src/main/assets/index.android.bundle
+cd android && ./gradlew assembleRelease --no-daemon    # unsigned release APK, no dev-launcher
+```
+
+The `preview` EAS profile produces a signed standalone APK where `MainActivity` is the permanent foreground activity, which is what Appium expects.
+
+**Workaround (skip `appWaitActivity`):**
+As a quick test, remove `'appium:appWaitActivity'` from capabilities and set `'appium:appWaitDuration': 5000`. This tells Appium to just wait 5s after launch rather than waiting for a specific activity. If the dev launcher appears, tests will still fail on element lookup, but at least sessions will be created.
 
 ---
 
@@ -182,7 +205,7 @@ Supports Appium natively. Upload the APK, specify desired capabilities, and run 
 
 ## Next Steps (Priority Order)
 
-1. **[In progress]** Complete standalone APK build (BLOCKER-4 fix)
+1. **[Action required]** Build a standalone preview APK (BLOCKER-4 fix) — run `eas build --platform android --profile preview` or use EAS dashboard at https://expo.dev/accounts/alwin523/projects/flood-mobile-app/builds
 2. **[Manual]** Add testID props to all 21 app screens (BLOCKER-5) — follow the plan in `.claude/plans/humble-napping-map.md`
 3. **[Manual]** Create test accounts in staging backend (BLOCKER-6)
 4. **[Code]** Fix `AuthHelper.ts` `terminateApp` call (ISSUE-01)
